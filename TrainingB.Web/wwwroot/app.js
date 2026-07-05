@@ -92,10 +92,10 @@ async function runScraper(name) {
 
     try {
         // Create abort controller with timeout (longer than server timeout)
-        // 4D scrapers: 11min client timeout (server 10min)
+        // 4D scrapers: 15min client timeout (server 10min, actual ~6-12min)
         // Others: 6min client timeout (server 5min)
         const is4D = name.includes('4D');
-        const clientTimeoutMinutes = is4D ? 11 : 6;
+        const clientTimeoutMinutes = is4D ? 15 : 6;
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), clientTimeoutMinutes * 60 * 1000);
 
@@ -153,7 +153,7 @@ async function runScraper(name) {
     } catch (error) {
         if (error.name === 'AbortError') {
             const is4D = name.includes('4D');
-            const timeoutMsg = is4D ? 'quá 11 phút' : 'quá 6 phút';
+            const timeoutMsg = is4D ? 'quá 15 phút' : 'quá 6 phút';
             showStatus(`⏱️ ${name} timeout (${timeoutMsg})`, 'error');
             resultsDiv.textContent = `[${new Date().toLocaleTimeString()}] ${name}: CLIENT TIMEOUT - Không nhận được response\n\n` + resultsDiv.textContent;
         } else {
