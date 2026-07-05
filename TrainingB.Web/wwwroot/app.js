@@ -113,8 +113,9 @@ async function runScraper(name) {
         console.log('Result text:', data.result);
         console.log('Response status:', response.status);
 
-        // Handle both success (200) and no-changes (409) as valid results
-        if (response.ok || response.status === 409 || data.success) {
+        // Handle different response statuses
+        if (response.ok || data.success) {
+            // Success case (200)
             showStatus(`✅ ${name} hoàn thành!`, 'success');
 
             // Display result
@@ -131,6 +132,11 @@ async function runScraper(name) {
             resultsDiv.textContent = newResult + resultsDiv.textContent;
 
             console.log('Updated results div:', resultsDiv.textContent);
+        } else if (response.status === 409) {
+            // Conflict - another scraper is running
+            showStatus(`⏳ ${name}: Server đang bận`, 'error');
+            const message = data.message || `Scraper khác đang chạy: ${data.currentScraper || 'unknown'}`;
+            resultsDiv.textContent = `[${new Date().toLocaleTimeString()}] ${name}: ${message}\n\n` + resultsDiv.textContent;
         } else if (response.status === 408) {
             // Timeout from server
             showStatus(`⏱️ ${name} timeout (quá 5 phút)`, 'error');

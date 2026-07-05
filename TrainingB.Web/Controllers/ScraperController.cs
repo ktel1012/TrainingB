@@ -9,24 +9,53 @@ namespace TrainingB.Web.Controllers
     [Route("api/[controller]")]
     public class ScraperController : ControllerBase
     {
+        // QUAN TRỌNG: Lock để chỉ cho phép 1 scraper chạy tại 1 thời điểm
+        private static readonly SemaphoreSlim _scraperLock = new SemaphoreSlim(1, 1);
+        private static bool _isScraperRunning = false;
+        private static string _currentScraperName = "";
+
         [HttpGet("status")]
         public IActionResult GetStatus()
         {
-            return Ok(new 
-            { 
+            return Ok(new
+            {
                 status = "running",
                 message = "TrainingB Web API is running",
-                timestamp = DateTime.UtcNow
+                timestamp = DateTime.UtcNow,
+                scraperRunning = _isScraperRunning,
+                currentScraper = _currentScraperName
             });
         }
 
         [HttpPost("run/{scraperName}")]
         public async Task<IActionResult> RunScraper(string scraperName)
         {
+            // Check nếu đang có scraper khác chạy
+            if (_isScraperRunning)
+            {
+                Logger.Warning($"API: Scraper {scraperName} rejected - another scraper is running: {_currentScraperName}");
+                return StatusCode(409, new
+                {
+                    error = "Another scraper is currently running",
+                    currentScraper = _currentScraperName,
+                    message = $"Please wait for '{_currentScraperName}' to complete"
+                });
+            }
+
+            // Thử acquire lock (không đợi)
+            if (!await _scraperLock.WaitAsync(0))
+            {
+                Logger.Warning($"API: Scraper {scraperName} rejected - lock busy");
+                return StatusCode(409, new { error = "Server is busy, please try again" });
+            }
+
             ChromeDriver? driver = null;
 
             try
             {
+                _isScraperRunning = true;
+                _currentScraperName = scraperName;
+
                 Logger.Info($"API: Starting scraper: {scraperName}");
 
                 driver = WebDriverHelper.CreateChromeDriver();
@@ -106,6 +135,14 @@ namespace TrainingB.Web.Controllers
                 catch (Exception ex)
                 {
                     Logger.Warning($"Error disposing ChromeDriver for {scraperName}: {ex.Message}");
+                }
+                finally
+                {
+                    // QUAN TRỌNG: Release lock và reset state
+                    _isScraperRunning = false;
+                    _currentScraperName = "";
+                    _scraperLock.Release();
+                    Logger.Info($"API: Released lock for {scraperName}");
                 }
             }
         }

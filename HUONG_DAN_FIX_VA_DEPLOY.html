@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hướng Dẫn Fix Code & Deploy TrainingB</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        h2 {
+            color: #667eea;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 24px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #764ba2;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .code-block code {
+            color: #f8f8f2;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .warning-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 5px;
+        }
+
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .success-title {
+            font-weight: bold;
+            color: #155724;
+            margin-bottom: 5px;
+        }
+
+        .info {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .info-title {
+            font-weight: bold;
+            color: #0c5460;
+            margin-bottom: 5px;
+        }
+
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        p {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #856404;
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Hướng Dẫn Fix Code & Deploy TrainingB</h1>
+        <p class="subtitle">Chi tiết từng bước fix lỗi, chuẩn bị code và deploy lên Internet</p>
+
+        <div class="info">
+            <div class="info-title">📋 Tổng Quan</div>
+            <p>Tài liệu này ghi lại <strong>TẤT CẢ</strong> các bước đã làm để fix code, cấu trúc lại project và deploy lên Render.com.</p>
+            <p><strong>Mục đích:</strong> Để bạn có thể tự làm lại hoặc fix khi cần thiết trong tương lai.</p>
+        </div>
+
+        <h2>📁 Phần 1: Cấu Trúc Project</h2>
+
+        <h3>1.1. Kiến Trúc Multi-Project</h3>
+        <p>Project được tách thành 3 phần riêng biệt:</p>
+
+        <div class="code-block"><code>TrainingB/
+├── TrainingB.csproj          (Desktop WinForms App)
+├── TrainingB.Core/
+│   └── TrainingB.Core.csproj (Shared Library - Scrapers, Services)
+└── TrainingB.Web/
+    └── TrainingB.Web.csproj  (Web API + PWA)
+</code></div>
+
+        <table>
+            <tr>
+                <th>Project</th>
+                <th>Công dụng</th>
+                <th>Platform</th>
+            </tr>
+            <tr>
+                <td><strong>TrainingB</strong></td>
+                <td>Desktop app (Windows Forms)</td>
+                <td>Windows PC</td>
+            </tr>
+            <tr>
+                <td><strong>TrainingB.Core</strong></td>
+                <td>Shared logic (Scrapers, Services, Config)</td>
+                <td>All platforms</td>
+            </tr>
+            <tr>
+                <td><strong>TrainingB.Web</strong></td>
+                <td>Web API + Progressive Web App</td>
+                <td>Browser, Mobile</td>
+            </tr>
+        </table>
+
+        <h3>1.2. Ưu Điểm Của Kiến Trúc Này</h3>
+        <ul>
+            <li>✅ <strong>Không trùng lặp code:</strong> Scrapers chỉ viết 1 lần trong Core</li>
+            <li>✅ <strong>Dễ maintain:</strong> Fix bug 1 chỗ → Cả Desktop & Web đều được fix</li>
+            <li>✅ <strong>Độc lập:</strong> Desktop & Web không ảnh hưởng lẫn nhau</li>
+            <li>✅ <strong>Deploy riêng:</strong> Web lên cloud, Desktop chạy local</li>
+        </ul>
+
+        <h2>🔧 Phần 2: Các Fix Code Quan Trọng</h2>
+
+        <h3>2.1. Fix Desktop Build Errors</h3>
+
+        <div class="warning">
+            <div class="warning-title">⚠️ Vấn Đề Ban Đầu</div>
+            <p>Desktop project không build được vì:</p>
+            <ul>
+                <li>Duplicate files: <code>Services/</code>, <code>Configuration/</code> đã có trong Core</li>
+                <li>Include cả <code>TrainingB.Web/</code> folder gây conflict</li>
+                <li>Scrapers trong <code>Forms/Test/</code> trùng với Core</li>
+            </ul>
+        </div>
+
+        <p><span class="step-number">1</span><strong>Sửa file TrainingB.csproj:</strong></p>
+
+        <div class="code-block"><code>&lt;Project Sdk="Microsoft.NET.Sdk"&gt;
+  &lt;PropertyGroup&gt;
+    &lt;OutputType&gt;WinExe&lt;/OutputType&gt;
+    &lt;TargetFramework&gt;net8.0-windows7.0&lt;/TargetFramework&gt;
+    &lt;UseWindowsForms&gt;true&lt;/UseWindowsForms&gt;
+  &lt;/PropertyGroup&gt;
+
+  &lt;!-- QUAN TRỌNG: Exclude các files duplicate --&gt;
+  &lt;ItemGroup&gt;
+    &lt;Compile Remove="Forms\Test\**" /&gt;
+    &lt;Compile Remove="Services\**" /&gt;
+    &lt;Compile Remove="TrainingB.Web\**" /&gt;
+    &lt;Compile Remove="TrainingB.Core\**" /&gt;
+  &lt;/ItemGroup&gt;
+
+  &lt;!-- Reference Core library để dùng Scrapers --&gt;
+  &lt;ItemGroup&gt;
+    &lt;ProjectReference Include="TrainingB.Core\TrainingB.Core.csproj" /&gt;
+  &lt;/ItemGroup&gt;
+
+  &lt;ItemGroup&gt;
+    &lt;PackageReference Include="Selenium.WebDriver" Version="4.25.0" /&gt;
+  &lt;/ItemGroup&gt;
+&lt;/Project&gt;
+</code></div>
+
+        <div class="success">
+            <div class="success-title">✅ Kết Quả</div>
+            <p>Desktop project build thành công, dùng compiled DLL từ TrainingB.Core thay vì source code trực tiếp.</p>
+        </div>
+
+        <h3>2.2. Fix Desktop App Load Scrapers</h3>
+
+        <div class="warning">
+            <div class="warning-title">⚠️ Vấn Đề</div>
+            <p>Code cũ dùng <code>Assembly.GetExecutingAssembly()</code> → Chỉ tìm scrapers trong Desktop project</p>
+            <p>Nhưng giờ Scrapers đã chuyển sang <code>TrainingB.Core.dll</code></p>
+        </div>
+
+        <p><span class="step-number">2</span><strong>Sửa file Forms/FormMonitor.cs:</strong></p>
+
+        <div class="code-block"><code>// CŨ (SAI):
+var ls = Assembly.GetExecutingAssembly().GetTypes()
+    .Where(a => a.IsSubclassOf(typeof(FindBase)))
+    .ToList();
+
+// MỚI (ĐÚNG):
+var coreAssembly = typeof(FindBase).Assembly;  // Lấy assembly chứa FindBase
+var ls = coreAssembly.GetTypes()
+    .Where(a => a.IsSubclassOf(typeof(FindBase)) && !a.IsAbstract)
+    .ToList();
+</code></div>
+
+        <p>Thay đổi này cần áp dụng cho <strong>TẤT CẢ</strong> các function:</p>
+        <ul>
+            <li><code>ProcessAllScrapers()</code> - Chạy tất cả scrapers</li>
+            <li><code>MN_Load()</code> - Chạy scrapers Miền Nam</li>
+            <li><code>HN_Load()</code> - Chạy scrapers Miền Bắc</li>
+            <li><code>LoadScrapersByFilter()</code> - Chạy scrapers theo filter</li>
+        </ul>
+
+        <h3>2.3. Fix Selenium Version Conflict</h3>
+
+        <div class="warning">
+            <div class="warning-title">⚠️ Vấn Đề</div>
+            <p>Selenium.WebDriver version 4.35.0 bị corrupt hoặc không tương thích với .NET 8.0</p>
+        </div>
+
+        <p><span class="step-number">3</span><strong>Downgrade về version ổn định:</strong></p>
+
+        <div class="code-block"><code># PowerShell:
+cd D:\TrainingB
+
+# Remove version cũ
+dotnet remove TrainingB.Core/TrainingB.Core.csproj package Selenium.WebDriver
+
+# Add version 4.25.0 (stable)
+dotnet add TrainingB.Core/TrainingB.Core.csproj package Selenium.WebDriver --version 4.25.0
+
+# Restore & Build
+dotnet restore
+dotnet build
+</code></div>
+
+        <h3>2.4. Fix Chrome Trong Docker</h3>
+
+        <div class="warning">
+            <div class="warning-title">⚠️ Vấn Đề Lớn Nhất</div>
+            <p>Chrome không chạy được trong Docker container vì:</p>
+            <ul>
+                <li>Thiếu dependencies (xvfb, libgbm1, fonts, etc.)</li>
+                <li>Không có display server (X11)</li>
+                <li>Cần chạy headless mode</li>
+                <li>Cần disable sandbox (container restrictions)</li>
+            </ul>
+        </div>
+
+        <p><span class="step-number">4</span><strong>Sửa file TrainingB.Core/Services/WebDriverHelper.cs:</strong></p>
+
+        <div class="code-block"><code>public static ChromeDriver CreateDriver()
+{
+    var options = new ChromeOptions();
+
+    // Detect Docker environment
+    bool isDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true"
+                    || File.Exists("/.dockerenv");
+
+    if (isDocker)
+    {
+        Logger.Info("Running in Docker, applying container-specific Chrome options");
+
+        // QUAN TRỌNG: Các flags này BẮT BUỘC trong Docker
+        options.AddArguments(
+            "--headless=new",        // Headless mode (không cần GUI)
+            "--no-sandbox",          // Disable sandbox (Docker đã có isolation)
+            "--disable-dev-shm-usage", // Dùng /tmp thay vì /dev/shm
+            "--disable-gpu",         // Disable GPU
+            "--window-size=1920,1080"
+        );
+    }
+
+    var driver = new ChromeDriver(options);
+    driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
+    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30);
+
+    return driver;
+}
+</code></div>
+
+        <h2>🐳 Phần 3: Chuẩn Bị Deploy với Docker</h2>
+
+        <h3>3.1. Tạo Dockerfile</h3>
+
+        <p>File <code>Dockerfile</code> ở root folder của project:</p>
+
+        <div class="code-block"><code># Use .NET 8 SDK for building
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copy project files
+COPY ["TrainingB.Web/TrainingB.Web.csproj", "TrainingB.Web/"]
+COPY ["TrainingB.Core/TrainingB.Core.csproj", "TrainingB.Core/"]
+RUN dotnet restore "TrainingB.Web/TrainingB.Web.csproj"
+
+# Copy source code và build
+COPY . .
+WORKDIR "/src/TrainingB.Web"
+RUN dotnet build "TrainingB.Web.csproj" -c Release -o /app/build
+RUN dotnet publish "TrainingB.Web.csproj" -c Release -o /app/publish
+
+# Runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+
+# QUAN TRỌNG: Cài Chrome và dependencies
+RUN apt-get update && apt-get install -y \\
+    wget \\
+    gnupg \\
+    ca-certificates \\
+    apt-transport-https \\
+    xvfb \\
+    libgbm1 \\
+    libnss3 \\
+    libatk-bridge2.0-0 \\
+    libx11-xcb1 \\
+    libxcb-dri3-0 \\
+    libdrm2 \\
+    libgbm1 \\
+    libasound2 \\
+    fonts-liberation \\
+    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \\
+    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list \\
+    && apt-get update \\
+    && apt-get install -y google-chrome-stable \\
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy published app
+COPY --from=build /app/publish .
+
+# Environment variable để detect Docker
+ENV DOTNET_RUNNING_IN_CONTAINER=true
+
+# Expose port
+EXPOSE 8080
+
+ENTRYPOINT ["dotnet", "TrainingB.Web.dll"]
+</code></div>
+
+        <div class="info">
+            <div class="info-title">💡 Giải Thích Dockerfile</div>
+            <ul>
+                <li><strong>Stage 1 (build):</strong> Build .NET application</li>
+                <li><strong>Stage 2 (runtime):</strong> Install Chrome + dependencies, copy built app</li>
+                <li><strong>Multi-stage:</strong> Giảm image size (chỉ copy compiled app, không copy SDK)</li>
+            </ul>
+        </div>
+
+        <h3>3.2. Tạo .dockerignore</h3>
+
+        <p>File <code>.dockerignore</code> để exclude các files không cần thiết:</p>
+
+        <div class="code-block"><code>bin/
+obj/
+.vs/
+.git/
+*.user
+*.suo
+logs/
+*.log
+node_modules/
+</code></div>
+
+        <h3>3.3. Test Docker Locally (Tùy Chọn)</h3>
+
+        <div class="code-block"><code># Build image
+docker build -t trainingb-web .
+
+# Run container
+docker run -p 8080:8080 trainingb-web
+
+# Test
+# Mở browser: http://localhost:8080
+</code></div>
+
+        <h2>📦 Phần 4: Deploy Lên GitHub</h2>
+
+        <h3>4.1. Tạo GitHub Repository</h3>
+
+        <p><span class="step-number">1</span><strong>Trên GitHub.com:</strong></p>
+        <ol>
+            <li>Đăng nhập vào <a href="https://github.com" target="_blank">https://github.com</a></li>
+            <li>Click nút <strong>"New repository"</strong> (góc phải trên)</li>
+            <li>Điền thông tin:
+                <ul>
+                    <li><strong>Repository name:</strong> <code>TrainingB</code></li>
+                    <li><strong>Description:</strong> "Lottery data scraper with Desktop & Web apps"</li>
+                    <li><strong>Public/Private:</strong> Tùy chọn (Private nếu muốn giữ kín)</li>
+                </ul>
+            </li>
+            <li>Click <strong>"Create repository"</strong></li>
+        </ol>
+
+        <h3>4.2. Tạo .gitignore</h3>
+
+        <p>File <code>.gitignore</code> để không commit files không cần thiết:</p>
+
+        <div class="code-block"><code>## .NET Build outputs
+bin/
+obj/
+[Bb]in/
+[Oo]bj/
+
+## Visual Studio
+.vs/
+*.user
+*.suo
+*.userprefs
+*.sln.docstates
+
+## Logs
+logs/
+*.log
+
+## Dependencies
+node_modules/
+packages/
+
+## Environment files
+.env
+.env.local
+
+## OS files
+.DS_Store
+Thumbs.db
+</code></div>
+
+        <h3>4.3. Push Code Lên GitHub</h3>
+
+        <p><span class="step-number">2</span><strong>Trong PowerShell/Terminal:</strong></p>
+
+        <div class="code-block"><code>cd D:\TrainingB
+
+# Khởi tạo Git (nếu chưa có)
+git init
+
+# Add tất cả files
+git add .
+
+# Commit
+git commit -m "Initial commit: Multi-project architecture with Desktop & Web apps"
+
+# Add remote (thay YOUR_USERNAME bằng username GitHub của bạn)
+git remote add origin https://github.com/YOUR_USERNAME/TrainingB.git
+
+# Push lên GitHub
+git branch -M main
+git push -u origin main
+</code></div>
+
+        <div class="warning">
+            <div class="warning-title">⚠️ Lưu Ý</div>
+            <p>Nếu gặp lỗi authentication, dùng <strong>Personal Access Token</strong> thay vì password:</p>
+            <ol>
+                <li>GitHub → Settings → Developer settings → Personal access tokens → Generate new token</li>
+                <li>Chọn quyền: <code>repo</code> (full control)</li>
+                <li>Copy token và dùng làm password khi push</li>
+            </ol>
+        </div>
+
+        <h2>🌐 Phần 5: Deploy Lên Render.com</h2>
+
+        <h3>5.1. Tạo Tài Khoản Render</h3>
+
+        <ol>
+            <li>Vào <a href="https://render.com" target="_blank">https://render.com</a></li>
+            <li>Click <strong>"Get Started"</strong></li>
+            <li>Sign up bằng <strong>GitHub account</strong> (khuyên dùng)</li>
+            <li>Authorize Render để access GitHub repos</li>
+        </ol>
+
+        <h3>5.2. Tạo Web Service</h3>
+
+        <p><span class="step-number">1</span><strong>Trên Render Dashboard:</strong></p>
+
+        <ol>
+            <li>Click <strong>"New +"</strong> → <strong>"Web Service"</strong></li>
+            <li>Connect GitHub repository <code>TrainingB</code></li>
+            <li>Điền thông tin:
+                <table>
+                    <tr><th>Field</th><th>Value</th></tr>
+                    <tr><td><strong>Name</strong></td><td><code>trainingb</code></td></tr>
+                    <tr><td><strong>Region</strong></td><td>Singapore (gần VN nhất)</td></tr>
+                    <tr><td><strong>Branch</strong></td><td><code>main</code></td></tr>
+                    <tr><td><strong>Runtime</strong></td><td><code>Docker</code></td></tr>
+                    <tr><td><strong>Instance Type</strong></td><td>Free (hoặc trả phí nếu cần)</td></tr>
+                </table>
+            </li>
+            <li>Click <strong>"Create Web Service"</strong></li>
+        </ol>
+
+        <div class="info">
+            <div class="info-title">💡 Render Sẽ Tự Động</div>
+            <ul>
+                <li>✅ Detect <code>Dockerfile</code> và build image</li>
+                <li>✅ Deploy container</li>
+                <li>✅ Tạo public URL (VD: <code>https://trainingb.onrender.com</code>)</li>
+                <li>✅ Auto-deploy mỗi khi push code mới lên GitHub</li>
+            </ul>
+        </div>
+
+        <h3>5.3. Đợi Deploy Hoàn Tất</h3>
+
+        <p>Quá trình deploy mất <strong>5-10 phút</strong>:</p>
+        <ul>
+            <li>📦 Cloning repository từ GitHub</li>
+            <li>🔨 Building Docker image</li>
+            <li>📥 Downloading dependencies</li>
+            <li>🏗️ Installing Chrome & libraries</li>
+            <li>🚀 Starting container</li>
+        </ul>
+
+        <div class="success">
+            <div class="success-title">✅ Deploy Thành Công Khi:</div>
+            <p>Status hiển thị: <span class="highlight">Live</span></p>
+            <p>Bạn sẽ thấy URL: <code>https://your-app-name.onrender.com</code></p>
+        </div>
+
+        <h3>5.4. Kiểm Tra Website</h3>
+
+        <ol>
+            <li>Click vào URL được cung cấp</li>
+            <li>Xem giao diện PWA với 13 scraper buttons</li>
+            <li>Test 1 scraper:
+                <ul>
+                    <li>Click button VD: "MN - 4D Lô"</li>
+                    <li>Click "Yes" trong confirmation dialog</li>
+                    <li>Đợi ~30s - 2 phút</li>
+                    <li>Xem kết quả hiển thị</li>
+                </ul>
+            </li>
+        </ol>
+
+        <h2>🔧 Phần 6: Troubleshooting</h2>
+
+        <h3>6.0. Lỗi Concurrent Requests (2 người cùng chạy)</h3>
+
+        <div class="warning">
+            <div class="warning-title">⚠️ Lỗi: Server crash khi nhiều người cùng sử dụng</div>
+        </div>
+
+        <p><strong>Nguyên nhân:</strong></p>
+        <ul>
+            <li>2+ users click scraper cùng lúc → Server tạo nhiều ChromeDriver instances</li>
+            <li>Free tier Render chỉ có 512MB RAM</li>
+            <li>Mỗi ChromeDriver dùng ~200-300MB → Out of Memory</li>
+            <li>Không có locking mechanism → Race condition</li>
+        </ul>
+
+        <p><strong>Giải pháp đã implement:</strong></p>
+
+        <p><span class="step-number">1</span><strong>Thêm Request Queue vào ScraperController.cs:</strong></p>
+
+        <div class="code-block"><code>// Add ở đầu class:
+private static readonly SemaphoreSlim _scraperLock = new SemaphoreSlim(1, 1);
+private static bool _isScraperRunning = false;
+private static string _currentScraperName = "";
+
+// Trong RunScraper method:
+[HttpPost("run/{scraperName}")]
+public async Task&lt;IActionResult&gt; RunScraper(string scraperName)
+{
+    // Check nếu đang có scraper khác chạy
+    if (_isScraperRunning)
+    {
+        return StatusCode(409, new
+        {
+            error = "Another scraper is currently running",
+            currentScraper = _currentScraperName,
+            message = $"Please wait for '{_currentScraperName}' to complete"
+        });
+    }
+
+    // Thử acquire lock (không đợi)
+    if (!await _scraperLock.WaitAsync(0))
+    {
+        return StatusCode(409, new { error = "Server is busy, please try again" });
+    }
+
+    try
+    {
+        _isScraperRunning = true;
+        _currentScraperName = scraperName;
+
+        // ... run scraper code ...
+    }
+    finally
+    {
+        // Release lock
+        _isScraperRunning = false;
+        _currentScraperName = "";
+        _scraperLock.Release();
+    }
+}
+</code></div>
+
+        <p><span class="step-number">2</span><strong>Update frontend (app.js) để handle 409 status:</strong></p>
+
+        <div class="code-block"><code>else if (response.status === 409) {
+    // Conflict - another scraper is running
+    showStatus(`⏳ ${name}: Server đang bận`, 'error');
+    const message = data.message || `Scraper khác đang chạy`;
+    resultsDiv.textContent = `[${timestamp}] ${name}: ${message}\n\n` + resultsDiv.textContent;
+}
+</code></div>
+
+        <div class="success">
+            <div class="success-title">✅ Kết Quả</div>
+            <ul>
+                <li>Chỉ cho phép 1 scraper chạy tại 1 thời điểm</li>
+                <li>Requests khác nhận error 409 với message rõ ràng</li>
+                <li>User biết phải đợi scraper hiện tại hoàn thành</li>
+                <li>Không còn crash do out of memory</li>
+            </ul>
+        </div>
+
+        <div class="info">
+            <div class="info-title">💡 Behavior Mới</div>
+            <p><strong>Khi 2 người cùng click button:</strong></p>
+            <ul>
+                <li>User 1 (click trước) → ✅ Scraper chạy bình thường</li>
+                <li>User 2 (click sau) → ⏳ Nhận message: "Please wait for 'MN_4D_LO' to complete"</li>
+                <li>User 2 có thể click lại sau khi User 1 xong (1-2 phút)</li>
+            </ul>
+        </div>
+
+
+        <h3>6.1. Lỗi Build Desktop App</h3>
+
+        <div class="warning">
+            <div class="warning-title">⚠️ Lỗi: Duplicate type/file conflicts</div>
+        </div>
+
+        <p><strong>Nguyên nhân:</strong> File bị include trùng trong cả Desktop và Core project</p>
+
+        <p><strong>Giải pháp:</strong></p>
+        <div class="code-block"><code># Kiểm tra TrainingB.csproj có exclude đúng:
+&lt;Compile Remove="Forms\Test\**" /&gt;
+&lt;Compile Remove="Services\**" /&gt;
+&lt;Compile Remove="TrainingB.Core\**" /&gt;
+&lt;Compile Remove="TrainingB.Web\**" /&gt;
+
+# Clean & rebuild:
+dotnet clean TrainingB.csproj
+dotnet build TrainingB.csproj
+</code></div>
+
+        <h3>6.2. Desktop App Không Load Scrapers</h3>
+
+        <div class="warning">
+            <div class="warning-title">⚠️ Lỗi: Click "Run" không có gì xảy ra</div>
+        </div>
+
+        <p><strong>Nguyên nhân:</strong> Code dùng <code>GetExecutingAssembly()</code> thay vì load từ Core DLL</p>
+
+        <p><strong>Giải pháp:</strong></p>
+        <div class="code-block"><code># Check Forms/FormMonitor.cs các function:
+# ProcessAllScrapers(), MN_Load(), HN_Load(), LoadScrapersByFilter()
+
+# Phải dùng:
+var coreAssembly = typeof(FindBase).Assembly;
+var ls = coreAssembly.GetTypes()
+    .Where(a => a.IsSubclassOf(typeof(FindBase)) && !a.IsAbstract)
+    .ToList();
+</code></div>
+
+        <h3>6.3. Chrome Không Chạy Trong Docker</h3>
+
+        <div class="warning">
+            <div class="warning-title">⚠️ Lỗi: SessionNotCreatedException</div>
+        </div>
+
+        <p><strong>Nguyên nhân:</strong> Thiếu Chrome dependencies hoặc không dùng headless mode</p>
+
+        <p><strong>Giải pháp:</strong></p>
+        <ol>
+            <li><strong>Check Dockerfile</strong> có cài đủ dependencies (xvfb, libgbm1, Chrome stable)</li>
+            <li><strong>Check WebDriverHelper.cs</strong> có detect Docker và add flags:
+                <ul>
+                    <li><code>--headless=new</code></li>
+                    <li><code>--no-sandbox</code></li>
+                    <li><code>--disable-dev-shm-usage</code></li>
+                </ul>
+            </li>
+            <li><strong>Check logs</strong> trên Render:
+                <ul>
+                    <li>Dashboard → Your service → Logs</li>
+                    <li>Tìm error message</li>
+                </ul>
+            </li>
+        </ol>
+
+        <h3>6.4. Render Deploy Fails</h3>
+
+        <div class="warning">
+            <div class="warning-title">⚠️ Lỗi: Build failed hoặc Deploy timeout</div>
+        </div>
+
+        <p><strong>Các nguyên nhân thường gặp:</strong></p>
+
+        <table>
+            <tr><th>Lỗi</th><th>Nguyên nhân</th><th>Giải pháp</th></tr>
+            <tr>
+                <td>Build timeout</td>
+                <td>Free tier có giới hạn thời gian build</td>
+                <td>Upgrade lên paid plan hoặc optimize Dockerfile</td>
+            </tr>
+            <tr>
+                <td>Port binding error</td>
+                <td>App không listen đúng port</td>
+                <td>Check <code>EXPOSE 8080</code> trong Dockerfile và app config</td>
+            </tr>
+            <tr>
+                <td>Permission denied</td>
+                <td>Chrome không có quyền execute</td>
+                <td>Add <code>--no-sandbox</code> flag</td>
+            </tr>
+            <tr>
+                <td>Out of memory</td>
+                <td>Free tier có RAM hạn chế (512MB)</td>
+                <td>Upgrade hoặc optimize code</td>
+            </tr>
+        </table>
+
+        <h3>6.5. NuGet Package Restore Errors</h3>
+
+        <div class="warning">
+            <div class="warning-title">⚠️ Lỗi: project.assets.json not found</div>
+        </div>
+
+        <p><strong>Giải pháp:</strong></p>
+        <div class="code-block"><code># PowerShell:
+cd D:\TrainingB
+
+# Restore packages
+dotnet restore TrainingB.sln
+
+# Hoặc trong Visual Studio:
+# Right-click Solution → Restore NuGet Packages
+</code></div>
+
+        <h2>📝 Phần 7: Workflow Sau Này</h2>
+
+        <h3>7.1. Khi Cần Fix Bug Hoặc Thêm Feature</h3>
+
+        <ol>
+            <li><strong>Sửa code local</strong> (Desktop hoặc Web)</li>
+            <li><strong>Test local:</strong>
+                <div class="code-block"><code># Test Desktop:
+dotnet run --project TrainingB.csproj
+
+# Test Web:
+dotnet run --project TrainingB.Web/TrainingB.Web.csproj --urls "http://localhost:5555"
+</code></div>
+            </li>
+            <li><strong>Commit & Push:</strong>
+                <div class="code-block"><code>git add .
+git commit -m "Fix: your description here"
+git push origin main
+</code></div>
+            </li>
+            <li><strong>Render tự động deploy</strong> (chờ 5-10 phút)</li>
+            <li><strong>Test trên production URL</strong></li>
+        </ol>
+
+        <h3>7.2. Khi Cần Rollback</h3>
+
+        <p>Nếu deploy mới có bug:</p>
+
+        <ol>
+            <li>Trên <strong>Render Dashboard</strong> → Your service → <strong>Manual Deploy</strong></li>
+            <li>Chọn <strong>commit trước đó</strong> (working version)</li>
+            <li>Click <strong>"Deploy"</strong></li>
+        </ol>
+
+        <p>Hoặc dùng Git:</p>
+        <div class="code-block"><code># Revert về commit trước:
+git revert HEAD
+git push origin main
+
+# Hoặc reset về commit cụ thể:
+git reset --hard COMMIT_HASH
+git push -f origin main
+</code></div>
+
+        <h3>7.3. Monitor Logs</h3>
+
+        <p>Luôn theo dõi logs để detect lỗi sớm:</p>
+
+        <ul>
+            <li><strong>Desktop:</strong> <code>D:\TrainingB\logs\app-YYYYMMDD.log</code></li>
+            <li><strong>Web Production:</strong> Render Dashboard → Logs tab</li>
+            <li><strong>Web Local:</strong> Console output khi chạy <code>dotnet run</code></li>
+        </ul>
+
+        <h2>🎯 Phần 8: Tổng Kết</h2>
+
+        <h3>8.1. Những Gì Đã Đạt Được</h3>
+
+        <div class="success">
+            <div class="success-title">✅ Desktop App</div>
+            <ul>
+                <li>Build thành công với .NET 8.0</li>
+                <li>Load scrapers từ TrainingB.Core.dll</li>
+                <li>Chạy như phiên bản cũ (auto-run all scrapers)</li>
+                <li>Có buttons để chạy theo vùng (MN/HN) hoặc filter</li>
+            </ul>
+        </div>
+
+        <div class="success">
+            <div class="success-title">✅ Web App</div>
+            <ul>
+                <li>PWA (Progressive Web App) - có thể install trên mobile</li>
+                <li>13 scraper buttons với confirmation dialogs</li>
+                <li>Copy kết quả dễ dàng</li>
+                <li>Responsive design (mobile-friendly)</li>
+                <li>Đảo Số feature</li>
+            </ul>
+        </div>
+
+        <div class="success">
+            <div class="success-title">✅ Core Library</div>
+            <ul>
+                <li>Shared logic giữa Desktop & Web</li>
+                <li>13 scrapers hoạt động ổn định</li>
+                <li>Selenium với Chrome headless hỗ trợ Docker</li>
+                <li>Logging system đầy đủ</li>
+            </ul>
+        </div>
+
+        <div class="success">
+            <div class="success-title">✅ Deployment</div>
+            <ul>
+                <li>Docker container với Chrome dependencies</li>
+                <li>Auto-deploy từ GitHub</li>
+                <li>Public URL accessible worldwide</li>
+                <li>Free hosting trên Render.com</li>
+            </ul>
+        </div>
+
+        <h3>8.2. Kiến Trúc Cuối Cùng</h3>
+
+        <div class="code-block"><code>TrainingB/                        (Root project)
+│
+├── TrainingB.csproj              ← Desktop WinForms
+├── Forms/                        ← WinForms UI
+│   ├── FormMonitor.cs           (Main form)
+│   ├── FormDaoSo.cs             (Đảo số feature)
+│   └── FormWinTabs.cs
+│
+├── TrainingB.Core/               ← Shared Library
+│   ├── Scrapers/                (13 scrapers)
+│   ├── Services/                (WebDriverHelper, Logger)
+│   └── Configuration/           (AppSettings)
+│
+├── TrainingB.Web/                ← Web API + PWA
+│   ├── Controllers/             (ScraperController, DaoSoController)
+│   ├── wwwroot/                 (index.html, app.js, PWA files)
+│   └── Program.cs
+│
+├── Dockerfile                    ← Docker config
+├── .dockerignore
+├── .gitignore
+└── appsettings.json             (Shared config)
+</code></div>
+
+        <h3>8.3. Các Files Quan Trọng</h3>
+
+        <table>
+            <tr><th>File</th><th>Mục đích</th><th>Quan trọng</th></tr>
+            <tr>
+                <td><code>Dockerfile</code></td>
+                <td>Build Docker image</td>
+                <td>⭐⭐⭐</td>
+            </tr>
+            <tr>
+                <td><code>WebDriverHelper.cs</code></td>
+                <td>Detect Docker, config Chrome</td>
+                <td>⭐⭐⭐</td>
+            </tr>
+            <tr>
+                <td><code>TrainingB.csproj</code></td>
+                <td>Desktop project config</td>
+                <td>⭐⭐⭐</td>
+            </tr>
+            <tr>
+                <td><code>FormMonitor.cs</code></td>
+                <td>Desktop main UI logic</td>
+                <td>⭐⭐⭐</td>
+            </tr>
+            <tr>
+                <td><code>.gitignore</code></td>
+                <td>Exclude files khỏi Git</td>
+                <td>⭐⭐</td>
+            </tr>
+            <tr>
+                <td><code>.dockerignore</code></td>
+                <td>Exclude files khỏi Docker</td>
+                <td>⭐⭐</td>
+            </tr>
+        </table>
+
+        <h3>8.4. Checklist Trước Khi Deploy</h3>
+
+        <p>Trước mỗi lần deploy, check:</p>
+
+        <ul>
+            <li>☑️ Desktop app build thành công</li>
+            <li>☑️ Web app test OK trên local</li>
+            <li>☑️ Tất cả scrapers chạy đúng</li>
+            <li>☑️ Không có hardcoded values (URLs, paths)</li>
+            <li>☑️ Logs không có errors</li>
+            <li>☑️ .gitignore exclude đúng files (bin/, obj/, logs/)</li>
+            <li>☑️ Dockerfile có đủ Chrome dependencies</li>
+            <li>☑️ WebDriverHelper.cs detect Docker correctly</li>
+        </ul>
+
+        <h3>8.5. Tips & Best Practices</h3>
+
+        <div class="info">
+            <div class="info-title">💡 Gợi Ý</div>
+            <ul>
+                <li><strong>Git commits:</strong> Commit thường xuyên với message rõ ràng</li>
+                <li><strong>Testing:</strong> Luôn test local trước khi push</li>
+                <li><strong>Logs:</strong> Check logs thường xuyên để phát hiện lỗi sớm</li>
+                <li><strong>Backups:</strong> Git là backup tự động, nhưng có thể clone thêm repo</li>
+                <li><strong>Documentation:</strong> Update docs khi thay đổi lớn</li>
+                <li><strong>Monitoring:</strong> Set up alerts trên Render (paid plan) để biết khi app down</li>
+            </ul>
+        </div>
+
+        <h2>🎓 Phần 9: Tài Liệu Tham Khảo</h2>
+
+        <h3>9.1. Documentation Files</h3>
+
+        <p>Các files hướng dẫn khác trong project:</p>
+
+        <ul>
+            <li><code>DEPLOYMENT_GUIDE.md</code> - Chi tiết về deployment</li>
+            <li><code>TROUBLESHOOTING_GUIDE.md</code> - Các lỗi thường gặp</li>
+            <li><code>PWA_INSTALL_GUIDE.md</code> - Cài PWA trên mobile</li>
+            <li><code>SCRAPER_REFACTORING_GUIDE.md</code> - Hướng dẫn viết scrapers</li>
+        </ul>
+
+        <h3>9.2. Links Hữu Ích</h3>
+
+        <ul>
+            <li><strong>GitHub:</strong> <a href="https://github.com" target="_blank">https://github.com</a></li>
+            <li><strong>Render:</strong> <a href="https://render.com" target="_blank">https://render.com</a></li>
+            <li><strong>Selenium Docs:</strong> <a href="https://www.selenium.dev/documentation/" target="_blank">https://www.selenium.dev/documentation/</a></li>
+            <li><strong>.NET Docs:</strong> <a href="https://learn.microsoft.com/dotnet/" target="_blank">https://learn.microsoft.com/dotnet/</a></li>
+            <li><strong>Docker Docs:</strong> <a href="https://docs.docker.com/" target="_blank">https://docs.docker.com/</a></li>
+        </ul>
+
+        <h3>9.3. Contact & Support</h3>
+
+        <p>Nếu gặp vấn đề:</p>
+        <ol>
+            <li>Check <code>TROUBLESHOOTING_GUIDE.md</code></li>
+            <li>Search error message trên Google/Stack Overflow</li>
+            <li>Check Render logs</li>
+            <li>Check GitHub Issues (nếu public repo)</li>
+        </ol>
+
+        <hr style="margin: 40px 0; border: none; border-top: 2px solid #ddd;">
+
+        <div style="text-align: center; color: #666; margin-top: 40px;">
+            <p><strong>🎉 Chúc mừng! Bạn đã hoàn thành việc fix code và deploy TrainingB!</strong></p>
+            <p>Created: 2026-07-05 | Version: 1.0</p>
+            <p style="font-size: 12px; margin-top: 20px;">
+                Tài liệu này có thể được cập nhật khi có thay đổi lớn trong kiến trúc hoặc deployment process.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -110,7 +110,11 @@ namespace TrainingB.Forms
         {
             try
             {
-                var ls = Assembly.GetExecutingAssembly().GetTypes().Where(a => a.IsSubclassOf(typeof(FindBase))).ToList();
+                // Load scrapers from TrainingB.Core assembly
+                var coreAssembly = typeof(FindBase).Assembly;
+                var ls = coreAssembly.GetTypes().Where(a => a.IsSubclassOf(typeof(FindBase)) && !a.IsAbstract).ToList();
+
+                Logger.Info($"Found {ls.Count} scrapers to process");
 
                 foreach (var l in ls)
                 {
@@ -122,12 +126,24 @@ namespace TrainingB.Forms
                             return;
                         }
 
+                        this.Invoke((Action)(() => listBox1.Items.Add(l.Name)));
+
                         FindBase? instance = (FindBase?)Activator.CreateInstance(l, driver);
                         if (instance == null) continue;
 
                         this.Invoke((Action)(() => txtURL.Text = instance.URL));
                         driver.Url = instance.URL;
-                        instance.GetChangeList();
+
+                        var ret = instance.GetChangeList();
+
+                        this.Invoke((Action)(() =>
+                        {
+                            if (ret.StartsWith("2d")) txt2D.Text += ret;
+                            if (ret.StartsWith("3d")) txt3D.Text += ret;
+                            if (ret.StartsWith("4d")) txt4D.Text += ret;
+                        }));
+
+                        Logger.Info($"Completed scraper: {l.Name}");
                     }
                     catch (Exception ex)
                     {
@@ -182,7 +198,8 @@ namespace TrainingB.Forms
             {
                 try
                 {
-                    var ls = Assembly.GetExecutingAssembly().GetTypes().Where(a => a.IsSubclassOf(typeof(FindBase))).ToList();
+                    var coreAssembly = typeof(FindBase).Assembly;
+                    var ls = coreAssembly.GetTypes().Where(a => a.IsSubclassOf(typeof(FindBase)) && !a.IsAbstract).ToList();
 
                     foreach (var l in ls)
                     {
@@ -233,7 +250,8 @@ namespace TrainingB.Forms
             {
                 try
                 {
-                    var ls = Assembly.GetExecutingAssembly().GetTypes().Where(a => a.IsSubclassOf(typeof(FindBase))).ToList();
+                    var coreAssembly = typeof(FindBase).Assembly;
+                    var ls = coreAssembly.GetTypes().Where(a => a.IsSubclassOf(typeof(FindBase)) && !a.IsAbstract).ToList();
 
                     foreach (var l in ls)
                     {
@@ -338,8 +356,9 @@ namespace TrainingB.Forms
             {
                 try
                 {
-                    var ls = Assembly.GetExecutingAssembly().GetTypes()
-                        .Where(a => a.IsSubclassOf(typeof(FindBase)))
+                    var coreAssembly = typeof(FindBase).Assembly;
+                    var ls = coreAssembly.GetTypes()
+                        .Where(a => a.IsSubclassOf(typeof(FindBase)) && !a.IsAbstract)
                         .ToList();
 
                     foreach (var l in ls)

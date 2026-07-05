@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Selenium.WebDriver" Version="4.35.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.25.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,6 +21,22 @@
 
   <ItemGroup>
     <ProjectReference Include="TrainingB.Core\TrainingB.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Exclude duplicate files - use TrainingB.Core instead -->
+    <Compile Remove="Forms\Test\**" />
+    <Compile Remove="Services\**" />
+    <Compile Remove="TrainingB.Web\**" />
+    <Compile Remove="TrainingB.Core\**" />
+    <EmbeddedResource Remove="Forms\Test\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <EmbeddedResource Remove="TrainingB.Web\**" />
+    <EmbeddedResource Remove="TrainingB.Core\**" />
+    <None Remove="Forms\Test\**" />
+    <None Remove="Services\**" />
+    <None Remove="TrainingB.Web\**" />
+    <None Remove="TrainingB.Core\**" />
   </ItemGroup>
 
 </Project>
