@@ -35,9 +35,34 @@ namespace TrainingB.Core.Scrapers
 
                         l3.Click();
 
-                        // Wait for table data using line count check (more reliable than text content)
-                        // Line count check is faster - only need 3 stable checks instead of 10
-                        WaitForTableData(TablePath, maxWaitSeconds: 20, stableCheckCount: 3, checkIntervalMs: 500);
+                        // Wait for initial table load
+                        SafeSleep(2000);
+
+                        // Scroll table to load all data (lazy loading issue on Render headless Chrome)
+                        // Render only shows 160 lines, Desktop shows 400 - need to scroll to force render all
+                        try
+                        {
+                            var tableElement = _driver.FindElement(TablePath);
+                            IJavaScriptExecutor js = (IJavaScriptExecutor)_driver;
+
+                            // Scroll to bottom multiple times to load all lazy-loaded content
+                            for (int i = 0; i < 5; i++)
+                            {
+                                js.ExecuteScript("arguments[0].scrollTop = arguments[0].scrollHeight;", tableElement);
+                                Thread.Sleep(500);
+                            }
+
+                            // Scroll back to top
+                            js.ExecuteScript("arguments[0].scrollTop = 0;", tableElement);
+                            Thread.Sleep(500);
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Warning($"Failed to scroll table: {ex.Message}");
+                        }
+
+                        // Now wait for table data to stabilize after scrolling
+                        WaitForTableData(TablePath, maxWaitSeconds: 10, stableCheckCount: 3, checkIntervalMs: 500);
 
                         var tbl = _driver.FindElement(TablePath);
                         var txt = tbl.Text;
