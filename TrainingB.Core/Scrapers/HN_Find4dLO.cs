@@ -29,8 +29,14 @@ namespace TrainingB.Core.Scrapers
                     var tbl = _driver.FindElement(TablePath2);
                     var bb = tbl.FindElements(By.XPath("button[@type='button']"));
 
+                    Logger.Info($"HN_Find4dLO: Found {bb.Count} buttons to process");
+
+                    int buttonIndex = 0;
                     foreach (var bb1 in bb)
                     {
+                        buttonIndex++;
+                        Logger.Debug($"HN_Find4dLO: Processing button {buttonIndex}/{bb.Count}");
+
                         b[5].Click();
                         bb1.Click();
                         WaitForTableData(TablePath, maxWaitSeconds: 5, stableCheckCount: 2, checkIntervalMs: 300);
