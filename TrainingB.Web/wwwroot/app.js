@@ -91,9 +91,13 @@ async function runScraper(name) {
     showStatus(`🔄 Đang chạy ${name}... (có thể mất vài phút)`, 'loading');
 
     try {
-        // Create abort controller with 6-minute timeout (longer than server's 5min)
+        // Create abort controller with timeout (longer than server timeout)
+        // 4D scrapers: 11min client timeout (server 10min)
+        // Others: 6min client timeout (server 5min)
+        const is4D = name.includes('4D');
+        const clientTimeoutMinutes = is4D ? 11 : 6;
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 6 * 60 * 1000);
+        const timeoutId = setTimeout(() => controller.abort(), clientTimeoutMinutes * 60 * 1000);
 
         const response = await fetch(`/api/scraper/run/${name}`, {
             method: 'POST',
@@ -139,7 +143,8 @@ async function runScraper(name) {
             resultsDiv.textContent = `[${new Date().toLocaleTimeString()}] ${name}: ${message}\n\n` + resultsDiv.textContent;
         } else if (response.status === 408) {
             // Timeout from server
-            showStatus(`⏱️ ${name} timeout (quá 5 phút)`, 'error');
+            const timeoutMsg = is4D ? 'quá 10 phút' : 'quá 5 phút';
+            showStatus(`⏱️ ${name} timeout (${timeoutMsg})`, 'error');
             resultsDiv.textContent = `[${new Date().toLocaleTimeString()}] ${name}: TIMEOUT - Scraper chạy quá lâu\n\n` + resultsDiv.textContent;
         } else {
             showStatus(`❌ Lỗi: ${data.error}`, 'error');
@@ -147,7 +152,9 @@ async function runScraper(name) {
         }
     } catch (error) {
         if (error.name === 'AbortError') {
-            showStatus(`⏱️ ${name} timeout (quá 6 phút)`, 'error');
+            const is4D = name.includes('4D');
+            const timeoutMsg = is4D ? 'quá 11 phút' : 'quá 6 phút';
+            showStatus(`⏱️ ${name} timeout (${timeoutMsg})`, 'error');
             resultsDiv.textContent = `[${new Date().toLocaleTimeString()}] ${name}: CLIENT TIMEOUT - Không nhận được response\n\n` + resultsDiv.textContent;
         } else {
             showStatus(`❌ Lỗi kết nối: ${error.message}`, 'error');

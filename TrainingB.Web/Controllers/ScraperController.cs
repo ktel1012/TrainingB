@@ -87,8 +87,11 @@ namespace TrainingB.Web.Controllers
                 Logger.Debug($"Navigating to: {scraper.URL}");
                 driver.NavigateWithRetry(scraper.URL);
 
-                // Run scraper with timeout (5 minutes max)
-                using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+                // Run scraper with timeout
+                // 4D scrapers need more time (100 buttons × 3s = 5min, need buffer)
+                // 2D/3D scrapers complete in 1-3 minutes
+                int timeoutMinutes = scraperName.Contains("4D") ? 10 : 5;
+                using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(timeoutMinutes));
                 var task = Task.Run(() => scraper.GetChangeList(), cts.Token);
 
                 string result;
@@ -98,8 +101,8 @@ namespace TrainingB.Web.Controllers
                 }
                 catch (TaskCanceledException)
                 {
-                    Logger.Warning($"API: Scraper {scraperName} timed out after 5 minutes");
-                    return StatusCode(408, new { error = "Scraper timed out after 5 minutes" });
+                    Logger.Warning($"API: Scraper {scraperName} timed out after {timeoutMinutes} minutes");
+                    return StatusCode(408, new { error = $"Scraper timed out after {timeoutMinutes} minutes" });
                 }
 
                 Logger.Info($"API: Scraper {scraperName} completed successfully");
