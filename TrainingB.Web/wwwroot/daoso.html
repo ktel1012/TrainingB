@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đảo Số - TrainingB</title>
+    <link rel="manifest" href="/manifest.json">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 30px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .input-section {
+            margin-bottom: 30px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            transition: border-color 0.3s;
+            letter-spacing: 4px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        button {
+            padding: 15px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .results-section {
+            margin-top: 30px;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .result-count {
+            font-size: 14px;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .copy-btn {
+            padding: 8px 16px;
+            font-size: 14px;
+            background: #28a745;
+        }
+        
+        .result-box {
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 150px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.8;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .status {
+            text-align: center;
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-weight: 600;
+            display: none;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔢 Đảo Số</h1>
+        <p class="subtitle">Number Permutation Generator</p>
+        
+        <div class="input-section">
+            <label for="inputNumber">Nhập số cần đảo:</label>
+            <input type="text" id="inputNumber" placeholder="Vd: 123 hoặc 1234" maxlength="4" />
+        </div>
+        
+        <div class="buttons-grid">
+            <button onclick="daoSo('dao2-2', 2)">Đảo 2/2</button>
+            <button onclick="daoSo('dao2-3', 3)">Đảo 2/3</button>
+            <button onclick="daoSo('dao2-4', 4)">Đảo 2/4</button>
+            <button onclick="daoSo('dao3-3', 3)">Đảo 3/3</button>
+            <button onclick="daoSo('dao3-4', 4)">Đảo 3/4</button>
+            <button onclick="daoSo('dao4-4', 4)">Đảo 4/4</button>
+        </div>
+        
+        <div class="status" id="status"></div>
+        
+        <div class="results-section">
+            <div class="result-header">
+                <h3>Kết quả:</h3>
+                <div>
+                    <span class="result-count" id="resultCount"></span>
+                    <button class="copy-btn" id="copyBtn" onclick="copyResults()" style="display:none;">📋 Copy</button>
+                </div>
+            </div>
+            <div class="result-box" id="resultBox">Chưa có kết quả...</div>
+        </div>
+        
+        <a href="/?v=5" class="back-link">← Quay lại Trang chủ</a>
+    </div>
+    
+    <script>
+        const inputNumber = document.getElementById('inputNumber');
+        const resultBox = document.getElementById('resultBox');
+        const resultCount = document.getElementById('resultCount');
+        const copyBtn = document.getElementById('copyBtn');
+        const status = document.getElementById('status');
+        
+        function showStatus(message, type) {
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 3000);
+        }
+        
+        async function daoSo(mode, expectedLength) {
+            const input = inputNumber.value.trim();
+            
+            // Validation
+            if (!input) {
+                showStatus('Vui lòng nhập số!', 'error');
+                inputNumber.focus();
+                return;
+            }
+            
+            if (input.length !== expectedLength) {
+                showStatus(`Số phải có ${expectedLength} chữ số!`, 'error');
+                inputNumber.focus();
+                return;
+            }
+            
+            if (!/^\d+$/.test(input)) {
+                showStatus('Chỉ được nhập số!', 'error');
+                inputNumber.focus();
+                return;
+            }
+            
+            // Call API
+            try {
+                const response = await fetch(`/api/daoso/${mode}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ input })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultBox.textContent = data.resultsString;
+                    resultCount.textContent = `${data.count} số`;
+                    copyBtn.style.display = 'inline-block';
+                    showStatus(`✅ ${data.mode}: ${data.count} số`, 'success');
+                } else {
+                    showStatus(`❌ ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus(`❌ Lỗi: ${error.message}`, 'error');
+            }
+        }
+        
+        function copyResults() {
+            const text = resultBox.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '✅ Đã copy!';
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                }, 2000);
+            });
+        }
+        
+        // Allow Enter key to trigger Dao 2/2 by default
+        inputNumber.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const length = inputNumber.value.trim().length;
+                if (length === 2) daoSo('dao2-2', 2);
+                else if (length === 3) daoSo('dao2-3', 3);
+                else if (length === 4) daoSo('dao2-4', 4);
+            }
+        });
+        
+        // Auto-detect and suggest mode based on input length
+        inputNumber.addEventListener('input', () => {
+            const length = inputNumber.value.length;
+            // Could add visual hints here
+        });
+    </script>
+</body>
+</html>

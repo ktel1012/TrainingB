@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scraper Test Debug</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #0f0;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            background: #2a2a2a;
+            color: #0f0;
+            border: 2px solid #0f0;
+        }
+        button:hover {
+            background: #0f0;
+            color: #000;
+        }
+        #log {
+            white-space: pre-wrap;
+            background: #000;
+            padding: 20px;
+            border: 1px solid #0f0;
+            margin-top: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .timestamp {
+            color: #888;
+        }
+        .success {
+            color: #0f0;
+        }
+        .error {
+            color: #f00;
+        }
+        .warning {
+            color: #ff0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔬 Scraper Debug Test</h1>
+    <p>Direct API testing with detailed logs</p>
+    
+    <button onclick="testStatus()">1. Test API Status</button>
+    <button onclick="testScrapersList()">2. Test Scrapers List</button>
+    <button onclick="testHN4DDUOI()">3. Test HN_4D_DUOI</button>
+    <button onclick="testMN4DDUOI()">4. Test MN_4D_DUOI</button>
+    <button onclick="clearLog()">Clear Log</button>
+    
+    <div id="log"></div>
+    
+    <script>
+        const log = document.getElementById('log');
+        
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : type === 'warning' ? 'warning' : '';
+            log.innerHTML += `<span class="timestamp">[${timestamp}]</span> <span class="${className}">${message}</span>\n`;
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        function clearLog() {
+            log.innerHTML = '';
+        }
+        
+        async function testStatus() {
+            addLog('📡 Testing /api/scraper/status...');
+            try {
+                const response = await fetch('/api/scraper/status');
+                const data = await response.json();
+                addLog(`✅ Status: ${JSON.stringify(data, null, 2)}`, 'success');
+            } catch (error) {
+                addLog(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testScrapersList() {
+            addLog('📡 Testing /api/scraper/scrapers...');
+            try {
+                const response = await fetch('/api/scraper/scrapers');
+                const data = await response.json();
+                addLog(`✅ Found ${data.length} scrapers`, 'success');
+                addLog(JSON.stringify(data, null, 2));
+            } catch (error) {
+                addLog(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testScraper(name) {
+            addLog(`🔄 Starting scraper: ${name}...`, 'warning');
+            addLog(`⏱️  This may take 1-5 minutes...`, 'warning');
+            
+            const startTime = Date.now();
+            
+            try {
+                // 6-minute timeout
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 6 * 60 * 1000);
+                
+                const response = await fetch(`/api/scraper/run/${name}`, {
+                    method: 'POST',
+                    signal: controller.signal,
+                    headers: {
+                        'Cache-Control': 'no-cache'
+                    }
+                });
+                
+                clearTimeout(timeoutId);
+                
+                const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+                addLog(`⏱️  Received response after ${elapsed}s`);
+                
+                const contentType = response.headers.get('content-type');
+                addLog(`📦 Content-Type: ${contentType}`);
+                addLog(`📊 Status Code: ${response.status} ${response.statusText}`);
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addLog(`✅ SUCCESS after ${elapsed}s`, 'success');
+                    addLog(`Result: ${JSON.stringify(data, null, 2)}`, 'success');
+                } else if (response.status === 408) {
+                    addLog(`⏱️  SERVER TIMEOUT after ${elapsed}s`, 'error');
+                    addLog(`Error: ${JSON.stringify(data, null, 2)}`, 'error');
+                } else {
+                    addLog(`❌ ERROR ${response.status} after ${elapsed}s`, 'error');
+                    addLog(`Error: ${JSON.stringify(data, null, 2)}`, 'error');
+                }
+                
+            } catch (error) {
+                const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+                
+                if (error.name === 'AbortError') {
+                    addLog(`⏱️  CLIENT TIMEOUT after ${elapsed}s (6 min limit)`, 'error');
+                } else {
+                    addLog(`❌ EXCEPTION after ${elapsed}s: ${error.message}`, 'error');
+                    addLog(`Error type: ${error.name}`, 'error');
+                    addLog(`Stack: ${error.stack}`, 'error');
+                }
+            }
+        }
+        
+        async function testHN4DDUOI() {
+            await testScraper('HN_4D_DUOI');
+        }
+        
+        async function testMN4DDUOI() {
+            await testScraper('MN_4D_DUOI');
+        }
+        
+        // Initial test
+        addLog('🚀 Debug page loaded. Click buttons to test.', 'success');
+    </script>
+</body>
+</html>
