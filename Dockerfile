@@ -1,5 +1,5 @@
 # Build stage
-# Force rebuild: 2026-07-05 12:00 - Fix threshold logic (sum > 2010)
+# Force rebuild: 2026-07-05 21:56 - Limit 4D scrapers to 50 buttons
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
