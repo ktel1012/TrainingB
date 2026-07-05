@@ -214,7 +214,9 @@ namespace TrainingB.Core.Scrapers
         {
             try
             {
-                var filtered = results.Where(p => p.Value.Sum() != threshold).Select(p => p).ToList();
+                // TEMPORARY: Disable threshold filtering in ProcessResults4Items
+                // Original: var filtered = results.Where(p => p.Value.Sum() != threshold).Select(p => p).ToList();
+                var filtered = results.Select(p => p).ToList();
 
                 if (filtered.Count == 0)
                 {
@@ -257,7 +259,9 @@ namespace TrainingB.Core.Scrapers
         {
             try
             {
-                var filtered = results.Where(p => p.Value.Sum() != threshold).Select(p => p).ToList();
+                // TEMPORARY: Disable threshold filtering in ProcessResults
+                // Original: var filtered = results.Where(p => p.Value.Sum() != threshold).Select(p => p).ToList();
+                var filtered = results.Select(p => p).ToList();
 
                 if (filtered.Count == 0)
                 {
