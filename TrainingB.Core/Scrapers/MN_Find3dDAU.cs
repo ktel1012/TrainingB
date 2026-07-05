@@ -25,8 +25,14 @@ namespace TrainingB.Core.Scrapers
                     var l = _driver.FindElement(FirstListPath);
                     var l2 = l.FindElements(By.XPath("span[@role='button']"));
 
+                    Logger.Info($"MN_Find3dDAU: Found {l2.Count} buttons to process");
+
+                    int buttonIndex = 0;
                     foreach (var l3 in l2)
                     {
+                        buttonIndex++;
+                        Logger.Debug($"MN_Find3dDAU: Processing button {buttonIndex}/{l2.Count}");
+
                         l3.Click();
 
                         // Wait for table data to load and stabilize (important for Docker/headless)
@@ -34,6 +40,9 @@ namespace TrainingB.Core.Scrapers
 
                         var tbl = _driver.FindElement(TablePath);
                         var txt = tbl.Text;
+
+                        int itemsInThisButton = string.IsNullOrWhiteSpace(txt) ? 0 : txt.Split('\n').Length;
+                        Logger.Debug($"MN_Find3dDAU: Button {buttonIndex} returned {itemsInThisButton} lines");
 
                         if (string.IsNullOrWhiteSpace(txt)) continue;
 
@@ -68,6 +77,7 @@ namespace TrainingB.Core.Scrapers
                         }
                     }
 
+                    Logger.Info($"MN_Find3dDAU: Processed {l2.Count} buttons, found {dic.Count} total items");
                     return ProcessResults(dic, threshold, "3dDau");
                 }
                 catch (Exception ex)
