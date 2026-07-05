@@ -107,6 +107,7 @@ namespace TrainingB.Core.Scrapers
         /// Wait until table has stable content (no longer changing).
         /// Useful after clicking buttons that trigger AJAX/dynamic content loading.
         /// Ensures ALL data is loaded, not just partial data.
+        /// Uses line count instead of text content for more reliable detection.
         /// </summary>
         protected void WaitForTableData(By tablePath, int maxWaitSeconds = 15, int stableCheckCount = 5, int checkIntervalMs = 500)
         {
@@ -114,7 +115,7 @@ namespace TrainingB.Core.Scrapers
             {
                 int waitedMs = 0;
                 int maxWaitMs = maxWaitSeconds * 1000;
-                string previousText = "";
+                int previousLineCount = 0;
                 int stableCount = 0;
                 int requiredStableChecks = stableCheckCount;
 
@@ -127,24 +128,27 @@ namespace TrainingB.Core.Scrapers
 
                         if (!string.IsNullOrWhiteSpace(currentText))
                         {
-                            // Check if content is stable (same as previous check)
-                            if (currentText == previousText)
+                            // Count lines instead of comparing text content
+                            int currentLineCount = currentText.Split('\n').Length;
+
+                            // Check if line count is stable (same as previous check)
+                            if (currentLineCount == previousLineCount && previousLineCount > 0)
                             {
                                 stableCount++;
 
                                 // If stable for required checks, data is complete
                                 if (stableCount >= requiredStableChecks)
                                 {
-                                    Logger.Debug($"Table data stable after {waitedMs}ms ({currentText.Length} chars, {stableCount} stable checks)");
+                                    Logger.Debug($"Table data stable after {waitedMs}ms ({currentLineCount} lines, {stableCount} stable checks)");
                                     return;
                                 }
                             }
                             else
                             {
-                                // Content changed, reset counter
+                                // Line count changed, reset counter
                                 stableCount = 0;
-                                previousText = currentText;
-                                Logger.Debug($"Table data changing... ({currentText.Length} chars)");
+                                previousLineCount = currentLineCount;
+                                Logger.Debug($"Table data loading... ({currentLineCount} lines)");
                             }
                         }
                     }
@@ -152,14 +156,14 @@ namespace TrainingB.Core.Scrapers
                     {
                         // Element not found yet, continue waiting
                         stableCount = 0;
-                        previousText = "";
+                        previousLineCount = 0;
                     }
 
                     Thread.Sleep(checkIntervalMs);
                     waitedMs += checkIntervalMs;
                 }
 
-                Logger.Warning($"Table data not stable after {maxWaitSeconds}s wait (last length: {previousText.Length})");
+                Logger.Warning($"Table data not stable after {maxWaitSeconds}s wait (last line count: {previousLineCount})");
             }
             catch (Exception ex)
             {

@@ -35,9 +35,9 @@ namespace TrainingB.Core.Scrapers
 
                         l3.Click();
 
-                        // Wait for table data to load and stabilize (important for Docker/headless)
-                        // Increased wait time to ensure ALL data loads (Desktop gets 400 lines, Web was only getting 160)
-                        WaitForTableData(TablePath, maxWaitSeconds: 30, stableCheckCount: 10, checkIntervalMs: 1000);
+                        // Wait for table data using line count check (more reliable than text content)
+                        // Line count check is faster - only need 3 stable checks instead of 10
+                        WaitForTableData(TablePath, maxWaitSeconds: 20, stableCheckCount: 3, checkIntervalMs: 500);
 
                         var tbl = _driver.FindElement(TablePath);
                         var txt = tbl.Text;
