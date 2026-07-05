@@ -104,42 +104,63 @@ namespace TrainingB.Core.Scrapers
         }
 
         /// <summary>
-        /// Wait until table has non-empty text content.
+        /// Wait until table has stable content (no longer changing).
         /// Useful after clicking buttons that trigger AJAX/dynamic content loading.
+        /// Ensures ALL data is loaded, not just partial data.
         /// </summary>
         protected void WaitForTableData(By tablePath, int maxWaitSeconds = 10)
         {
             try
             {
                 int waitedMs = 0;
-                int checkIntervalMs = 200;
+                int checkIntervalMs = 300;
                 int maxWaitMs = maxWaitSeconds * 1000;
+                string previousText = "";
+                int stableCount = 0;
+                int requiredStableChecks = 3; // Need 3 consecutive same results
 
                 while (waitedMs < maxWaitMs)
                 {
                     try
                     {
                         var tbl = _driver.FindElement(tablePath);
-                        var txt = tbl.Text;
+                        var currentText = tbl.Text ?? "";
 
-                        if (!string.IsNullOrWhiteSpace(txt))
+                        if (!string.IsNullOrWhiteSpace(currentText))
                         {
-                            // Additional wait to ensure all data is loaded
-                            Thread.Sleep(300);
-                            Logger.Debug($"Table data loaded after {waitedMs}ms");
-                            return;
+                            // Check if content is stable (same as previous check)
+                            if (currentText == previousText)
+                            {
+                                stableCount++;
+
+                                // If stable for required checks, data is complete
+                                if (stableCount >= requiredStableChecks)
+                                {
+                                    Logger.Debug($"Table data stable after {waitedMs}ms ({currentText.Length} chars, {stableCount} stable checks)");
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                // Content changed, reset counter
+                                stableCount = 0;
+                                previousText = currentText;
+                                Logger.Debug($"Table data changing... ({currentText.Length} chars)");
+                            }
                         }
                     }
                     catch
                     {
                         // Element not found yet, continue waiting
+                        stableCount = 0;
+                        previousText = "";
                     }
 
                     Thread.Sleep(checkIntervalMs);
                     waitedMs += checkIntervalMs;
                 }
 
-                Logger.Warning($"Table data not loaded after {maxWaitSeconds}s wait");
+                Logger.Warning($"Table data not stable after {maxWaitSeconds}s wait (last length: {previousText.Length})");
             }
             catch (Exception ex)
             {
