@@ -121,6 +121,21 @@ namespace TrainingB.Core.Services
                 if (settings.ChromeDriverSettings.IgnoreSslErrors)
                     options.AddArgument("--ignore-ssl-errors");
 
+                // Docker/Linux container support
+                var isDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true" ||
+                               Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production";
+
+                if (isDocker)
+                {
+                    options.AddArgument("--headless=new");
+                    options.AddArgument("--no-sandbox");
+                    options.AddArgument("--disable-dev-shm-usage");
+                    options.AddArgument("--disable-gpu");
+                    options.AddArgument("--disable-software-rasterizer");
+                    options.AddArgument("--disable-extensions");
+                    Logger.Info("Chrome configured for Docker/Linux container");
+                }
+
                 var service = ChromeDriverService.CreateDefaultService();
                 service.HideCommandPromptWindow = settings.ChromeDriverSettings.HideCommandPromptWindow;
 
