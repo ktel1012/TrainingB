@@ -46,9 +46,15 @@ namespace TrainingB.Core.Scrapers
 
                         if (string.IsNullOrWhiteSpace(txt)) continue;
 
+                        int itemsAddedThisButton = 0;
+                        int linesProcessed = 0;
+                        int parseFailures = 0;
+                        int thresholdSkips = 0;
+
                         var ls = new List<string>();
                         foreach (var txt2 in txt.Split('\n'))
                         {
+                            linesProcessed++;
                             if (string.IsNullOrEmpty(txt2)) continue;
 
                             var val = CleanValue(txt2);
@@ -60,6 +66,7 @@ namespace TrainingB.Core.Scrapers
                                     !TryParseInt(ls[1], out int val1, "MN_Find3dDAU") ||
                                     !TryParseInt(ls[2], out int val2, "MN_Find3dDAU"))
                                 {
+                                    parseFailures++;
                                     ls = new List<string>();
                                     continue;
                                 }
@@ -67,6 +74,7 @@ namespace TrainingB.Core.Scrapers
                                 int sum = val0 + val1 + val2;
                                 if (sum == threshold || (val0 == 0 && val1 == 0 && val2 == 0))
                                 {
+                                    thresholdSkips++;
                                     ls = new List<string>();
                                     continue;
                                 }
@@ -82,9 +90,12 @@ namespace TrainingB.Core.Scrapers
                                 }
 
                                 dic[key] = new List<int> { val0, val1, val2 };
+                                itemsAddedThisButton++;
                                 ls = new List<string>();
                             }
                         }
+
+                        Logger.Info($"MN_Find3dDAU: Button {buttonIndex} - Processed {linesProcessed} lines, Added {itemsAddedThisButton} items, ParseFails: {parseFailures}, ThresholdSkips: {thresholdSkips}");
                     }
 
                     Logger.Info($"MN_Find3dDAU: Processed {l2.Count} buttons, found {dic.Count} total items");
