@@ -103,6 +103,50 @@ namespace TrainingB.Core.Scrapers
             }
         }
 
+        /// <summary>
+        /// Wait until table has non-empty text content.
+        /// Useful after clicking buttons that trigger AJAX/dynamic content loading.
+        /// </summary>
+        protected void WaitForTableData(By tablePath, int maxWaitSeconds = 10)
+        {
+            try
+            {
+                int waitedMs = 0;
+                int checkIntervalMs = 200;
+                int maxWaitMs = maxWaitSeconds * 1000;
+
+                while (waitedMs < maxWaitMs)
+                {
+                    try
+                    {
+                        var tbl = _driver.FindElement(tablePath);
+                        var txt = tbl.Text;
+
+                        if (!string.IsNullOrWhiteSpace(txt))
+                        {
+                            // Additional wait to ensure all data is loaded
+                            Thread.Sleep(300);
+                            Logger.Debug($"Table data loaded after {waitedMs}ms");
+                            return;
+                        }
+                    }
+                    catch
+                    {
+                        // Element not found yet, continue waiting
+                    }
+
+                    Thread.Sleep(checkIntervalMs);
+                    waitedMs += checkIntervalMs;
+                }
+
+                Logger.Warning($"Table data not loaded after {maxWaitSeconds}s wait");
+            }
+            catch (Exception ex)
+            {
+                Logger.Warning($"Error in WaitForTableData: {ex.Message}");
+            }
+        }
+
         protected bool TryParseInt(string value, out int result, string context = "")
         {
             if (int.TryParse(value, out result))

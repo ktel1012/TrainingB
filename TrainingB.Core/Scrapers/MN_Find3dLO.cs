@@ -27,7 +27,7 @@ namespace TrainingB.Core.Scrapers
                     foreach (var l3 in l2)
                     {
                         l3.Click();
-                        SafeSleep(_appSettings.DefaultSleepMilliseconds);
+                        WaitForTableData(TablePath, maxWaitSeconds: 5);
 
                         var tbl = _driver.FindElement(TablePath);
                         var txt = tbl.Text;
