@@ -180,3 +180,50 @@ window.addEventListener('load', () => {
             .catch(err => console.log('Service Worker registration failed:', err));
     }
 });
+
+// Copy results to clipboard
+function copyResults() {
+    const results = document.getElementById('results').textContent;
+
+    if (results === 'Chưa có kết quả...') {
+        showStatus('Chưa có kết quả để copy!', 'error');
+        setTimeout(hideStatus, 2000);
+        return;
+    }
+
+    // Modern clipboard API
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(results)
+            .then(() => {
+                showStatus('✅ Đã copy kết quả!', 'success');
+                setTimeout(hideStatus, 2000);
+            })
+            .catch(err => {
+                console.error('Copy failed:', err);
+                fallbackCopy(results);
+            });
+    } else {
+        fallbackCopy(results);
+    }
+}
+
+// Fallback copy method for older browsers
+function fallbackCopy(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+
+    try {
+        document.execCommand('copy');
+        showStatus('✅ Đã copy kết quả!', 'success');
+        setTimeout(hideStatus, 2000);
+    } catch (err) {
+        showStatus('❌ Không thể copy, hãy long-press để select!', 'error');
+        setTimeout(hideStatus, 3000);
+    }
+
+    document.body.removeChild(textarea);
+}

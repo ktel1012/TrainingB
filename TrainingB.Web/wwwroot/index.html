@@ -112,6 +112,31 @@
             font-family: 'Courier New', monospace;
             font-size: 14px;
             white-space: pre-wrap;
+            user-select: text;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+        }
+
+        .copy-btn {
+            width: 100%;
+            padding: 12px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .copy-btn:hover {
+            background: #1976D2;
+        }
+
+        .copy-btn:active {
+            background: #0D47A1;
         }
         
         .install-btn {
@@ -159,8 +184,9 @@
         </a>
 
         <div class="scraper-grid" id="scraperGrid"></div>
-        
+
         <div class="results" id="results">Chưa có kết quả...</div>
+        <button class="copy-btn" onclick="copyResults()">📋 Copy Kết Quả</button>
     </div>
     
     <script src="/app.js?v=5"></script>
