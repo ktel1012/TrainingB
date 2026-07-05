@@ -156,7 +156,82 @@
         .install-btn:hover {
             background: #45a049;
         }
-        
+
+        /* Confirmation Dialog */
+        .dialog-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dialog-overlay.active {
+            display: flex;
+        }
+
+        .dialog-box {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .dialog-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .dialog-message {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .dialog-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .dialog-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .dialog-btn.confirm {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .dialog-btn.confirm:active {
+            transform: scale(0.95);
+        }
+
+        .dialog-btn.cancel {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .dialog-btn.cancel:active {
+            transform: scale(0.95);
+        }
+
         @media (max-width: 600px) {
             .container { padding: 20px; }
             h1 { font-size: 24px; }
@@ -173,7 +248,7 @@
         
         <div id="status" class="status" style="display:none;"></div>
         
-        <button class="scraper-btn run-all-btn" onclick="runAll()">
+        <button class="scraper-btn run-all-btn" onclick="confirmRunAll()">
             🚀 Chạy Tất Cả Scrapers
         </button>
 
@@ -188,7 +263,19 @@
         <div class="results" id="results">Chưa có kết quả...</div>
         <button class="copy-btn" onclick="copyResults()">📋 Copy Kết Quả</button>
     </div>
-    
-    <script src="/app.js?v=5"></script>
+
+    <!-- Confirmation Dialog -->
+    <div class="dialog-overlay" id="confirmDialog">
+        <div class="dialog-box">
+            <div class="dialog-title" id="dialogTitle">Xác nhận</div>
+            <div class="dialog-message" id="dialogMessage"></div>
+            <div class="dialog-buttons">
+                <button class="dialog-btn cancel" onclick="cancelDialog()">❌ Hủy</button>
+                <button class="dialog-btn confirm" onclick="confirmDialog()">✅ Chạy</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/app.js?v=7"></script>
 </body>
 </html>

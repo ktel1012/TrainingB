@@ -17,15 +17,41 @@ document.getElementById('installBtn').addEventListener('click', async () => {
     }
 });
 
+// Confirmation Dialog State
+let pendingAction = null;
+
+// Show confirmation dialog
+function showConfirmDialog(title, message, callback) {
+    document.getElementById('dialogTitle').textContent = title;
+    document.getElementById('dialogMessage').textContent = message;
+    document.getElementById('confirmDialog').classList.add('active');
+    pendingAction = callback;
+}
+
+// Confirm dialog
+function confirmDialog() {
+    document.getElementById('confirmDialog').classList.remove('active');
+    if (pendingAction) {
+        pendingAction();
+        pendingAction = null;
+    }
+}
+
+// Cancel dialog
+function cancelDialog() {
+    document.getElementById('confirmDialog').classList.remove('active');
+    pendingAction = null;
+}
+
 // Load scrapers
 async function loadScrapers() {
     try {
         const response = await fetch('/api/scraper/scrapers');
         const scrapers = await response.json();
-        
+
         const grid = document.getElementById('scraperGrid');
         grid.innerHTML = scrapers.map(s => `
-            <button class="scraper-btn" onclick="runScraper('${s.name}')">
+            <button class="scraper-btn" onclick="confirmRunScraper('${s.name}', '${s.description}')">
                 ${s.description}
             </button>
         `).join('');
@@ -45,6 +71,15 @@ function showStatus(message, type) {
 // Hide status
 function hideStatus() {
     document.getElementById('status').style.display = 'none';
+}
+
+// Confirm before running scraper
+function confirmRunScraper(name, description) {
+    showConfirmDialog(
+        '🤖 Xác nhận chạy Scraper',
+        `Bạn có chắc muốn chạy "${description}"?\n\nQuá trình có thể mất 30 giây - 2 phút.`,
+        () => runScraper(name)
+    );
 }
 
 // Run single scraper
@@ -114,6 +149,15 @@ async function runScraper(name) {
         buttons.forEach(btn => btn.disabled = false);
         setTimeout(hideStatus, 5000); // Show status a bit longer
     }
+}
+
+// Confirm before running all scrapers
+function confirmRunAll() {
+    showConfirmDialog(
+        '🚀 Xác nhận chạy TẤT CẢ',
+        `Bạn có chắc muốn chạy TẤT CẢ 13 scrapers?\n\n⚠️ Quá trình sẽ mất 5-10 phút!\n\nBạn có thể tắt màn hình nhưng đừng tắt app.`,
+        () => runAll()
+    );
 }
 
 // Run all scrapers
