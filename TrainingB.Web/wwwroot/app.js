@@ -111,13 +111,15 @@ async function runScraper(name) {
         // Debug logging
         console.log('Response data:', data);
         console.log('Result text:', data.result);
+        console.log('Response status:', response.status);
 
-        if (response.ok) {
+        // Handle both success (200) and no-changes (409) as valid results
+        if (response.ok || response.status === 409 || data.success) {
             showStatus(`✅ ${name} hoàn thành!`, 'success');
 
             // Display result
             const timestamp = new Date().toLocaleTimeString();
-            const resultText = data.result || 'No changes detected';
+            const resultText = data.result || 'Không có thay đổi (No changes detected)';
 
             // Clear default text on first result
             if (resultsDiv.textContent === 'Chưa có kết quả...') {

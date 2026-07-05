@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hướng Dẫn Deploy TrainingB lên Internet</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+            margin: 30px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .step {
+            position: relative;
+            margin-bottom: 40px;
+        }
+        
+        .step-number {
+            position: absolute;
+            left: -40px;
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        .step-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .step-content {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .step-content p {
+            margin-bottom: 10px;
+            color: #555;
+        }
+        
+        .step-content ol {
+            margin-left: 20px;
+            color: #555;
+        }
+        
+        .step-content li {
+            margin-bottom: 8px;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        
+        .code-block code {
+            color: #f8f8f2;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #856404;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .warning-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 5px;
+        }
+        
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .success-title {
+            font-weight: bold;
+            color: #155724;
+            margin-bottom: 5px;
+        }
+        
+        .info {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .info-title {
+            font-weight: bold;
+            color: #0c5460;
+            margin-bottom: 5px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 5px;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Hướng Dẫn Deploy TrainingB</h1>
+        <p class="subtitle">Từ GitHub đến Render.com - Chi tiết từng bước</p>
+
+        <div class="info">
+            <div class="info-title">📋 Tổng Quan</div>
+            <p>Hướng dẫn này sẽ giúp bạn deploy ứng dụng TrainingB lên internet hoàn toàn <strong>MIỄN PHÍ</strong>!</p>
+            <p><strong>Thời gian:</strong> ~20-30 phút | <strong>Chi phí:</strong> $0/tháng</p>
+        </div>
+
+        <div class="timeline">
+            <!-- BƯỚC 1: TẠO GITHUB ACCOUNT -->
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-title">📝 Tạo Tài Khoản GitHub</div>
+                <div class="step-content">
+                    <p><strong>GitHub là gì?</strong> Nơi lưu trữ code và quản lý phiên bản.</p>
+
+                    <ol>
+                        <li>Mở trình duyệt, vào: <a href="https://github.com" target="_blank">https://github.com</a></li>
+                        <li>Click nút <span class="highlight">Sign up</span> (góc trên bên phải)</li>
+                        <li>Điền thông tin:
+                            <ul>
+                                <li><strong>Email:</strong> Email của bạn</li>
+                                <li><strong>Password:</strong> Mật khẩu (ít nhất 8 ký tự)</li>
+                                <li><strong>Username:</strong> Tên người dùng (VD: ktel1012)</li>
+                            </ul>
+                        </li>
+                        <li>Verify email (check hộp thư đến)</li>
+                        <li>Chọn <strong>Free plan</strong></li>
+                    </ol>
+
+                    <div class="success">
+                        <div class="success-title">✅ Hoàn thành!</div>
+                        Bạn đã có tài khoản GitHub!
+                    </div>
+                </div>
+            </div>
+
+            <!-- BƯỚC 2: TẠO REPOSITORY -->
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-title">📦 Tạo Repository Mới</div>
+                <div class="step-content">
+                    <p><strong>Repository là gì?</strong> Nơi chứa toàn bộ code của project.</p>
+
+                    <ol>
+                        <li>Đăng nhập GitHub</li>
+                        <li>Click nút <span class="highlight">+</span> (góc trên bên phải)</li>
+                        <li>Chọn <span class="highlight">New repository</span></li>
+                        <li>Điền thông tin:
+                            <ul>
+                                <li><strong>Repository name:</strong> <code>TrainingB</code></li>
+                                <li><strong>Description:</strong> Lottery Scraper Web App</li>
+                                <li><strong>Visibility:</strong> Chọn <span class="highlight">Public</span></li>
+                                <li><strong>KHÔNG tick</strong> "Initialize with README"</li>
+                            </ul>
+                        </li>
+                        <li>Click <span class="highlight">Create repository</span></li>
+                    </ol>
+
+                    <div class="warning">
+                        <div class="warning-title">⚠️ Lưu ý quan trọng:</div>
+                        <p>Sau khi tạo, bạn sẽ thấy URL dạng:</p>
+                        <code>https://github.com/username/TrainingB.git</code>
+                        <p><strong>Copy URL này!</strong> Sẽ dùng ở bước sau.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BƯỚC 3: CÀI GIT -->
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-title">💻 Cài Đặt Git trên Windows</div>
+                <div class="step-content">
+                    <p><strong>Git là gì?</strong> Công cụ để đưa code lên GitHub.</p>
+
+                    <ol>
+                        <li>Download Git:
+                            <ul>
+                                <li>Vào: <a href="https://git-scm.com/download/win" target="_blank">https://git-scm.com/download/win</a></li>
+                                <li>Download bản <strong>64-bit Git for Windows Setup</strong></li>
+                            </ul>
+                        </li>
+                        <li>Chạy file <code>.exe</code> vừa tải</li>
+                        <li>Cài đặt:
+                            <ul>
+                                <li>Click <strong>Next</strong> liên tục</li>
+                                <li>Chọn <strong>Default editor:</strong> Vim (hoặc bất kỳ)</li>
+                                <li>Chọn <strong>Default branch name:</strong> main</li>
+                                <li>Các option khác: Để mặc định</li>
+                                <li>Click <strong>Install</strong></li>
+                            </ul>
+                        </li>
+                        <li>Đợi cài đặt xong → Click <strong>Finish</strong></li>
+                    </ol>
+
+                    <div class="success">
+                        <div class="success-title">✅ Kiểm tra cài đặt:</div>
+                        <p>Mở PowerShell và chạy:</p>
+                        <div class="code-block"><code>git --version</code></div>
+                        <p>Nếu hiện <code>git version 2.x.x</code> → Thành công!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BƯỚC 4: PUSH CODE LÊN GITHUB -->
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-title">⬆️ Push Code Lên GitHub</div>
+                <div class="step-content">
+                    <p><strong>Bước này:</strong> Đưa code từ máy tính lên GitHub.</p>
+
+                    <p><strong>4.1. Mở PowerShell trong folder TrainingB:</strong></p>
+                    <ol>
+                        <li>Mở <strong>File Explorer</strong></li>
+                        <li>Navigate đến: <code>D:\TrainingB</code></li>
+                        <li>Click vào <strong>thanh địa chỉ</strong> ở trên</li>
+                        <li>Gõ: <code>powershell</code> và Enter</li>
+                    </ol>
+
+                    <p><strong>4.2. Chạy lệnh Git:</strong></p>
+
+                    <div class="code-block"><code># 1. Initialize Git
+git init
+
+# 2. Configure user (THAY THÔNG TIN CỦA BẠN!)
+git config --global user.name "Tên của bạn"
+git config --global user.email "email@example.com"
+
+# 3. Add tất cả files
+git add .
+
+# 4. Commit
+git commit -m "Initial commit"
+
+# 5. Add remote (THAY USERNAME!)
+git remote add origin https://github.com/username/TrainingB.git
+
+# 6. Rename branch
+git branch -M main
+
+# 7. Push lên GitHub
+git push -u origin main</code></div>
+
+                    <div class="warning">
+                        <div class="warning-title">⚠️ Khi push, sẽ hỏi login:</div>
+                        <p><strong>Username:</strong> GitHub username của bạn</p>
+                        <p><strong>Password:</strong> KHÔNG phải password GitHub!</p>
+                        <p>→ Phải dùng <strong>Personal Access Token</strong> (xem bước 4.3)</p>
+                    </div>
+
+                    <p><strong>4.3. Tạo Personal Access Token:</strong></p>
+                    <ol>
+                        <li>Vào: <a href="https://github.com/settings/tokens" target="_blank">https://github.com/settings/tokens</a></li>
+                        <li>Click: <span class="highlight">Generate new token</span> → <span class="highlight">Generate new token (classic)</span></li>
+                        <li>Điền:
+                            <ul>
+                                <li><strong>Note:</strong> TrainingB</li>
+                                <li><strong>Expiration:</strong> No expiration</li>
+                                <li><strong>Scopes:</strong> Tick ✅ <strong>repo</strong> (tất cả checkboxes)</li>
+                            </ul>
+                        </li>
+                        <li>Click: <span class="highlight">Generate token</span></li>
+                        <li><strong>COPY TOKEN NGAY!</strong> Dạng: <code>ghp_xxxxxxxxxxxx</code></li>
+                        <li>Lưu vào Notepad (chỉ hiện 1 lần!)</li>
+                    </ol>
+
+                    <p><strong>4.4. Paste token khi git push hỏi password!</strong></p>
+
+                    <div class="success">
+                        <div class="success-title">✅ Verify:</div>
+                        <p>Sau khi push xong, vào GitHub repository:</p>
+                        <code>https://github.com/username/TrainingB</code>
+                        <p>Refresh page → Sẽ thấy TẤT CẢ files! ✅</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BƯỚC 5: ĐĂNG KÝ RENDER.COM -->
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-title">🌐 Đăng Ký Render.com</div>
+                <div class="step-content">
+                    <p><strong>Render.com là gì?</strong> Dịch vụ hosting miễn phí để chạy website.</p>
+
+                    <ol>
+                        <li>Vào: <a href="https://render.com" target="_blank">https://render.com</a></li>
+                        <li>Click: <span class="highlight">Get Started</span> hoặc <span class="highlight">Sign Up</span></li>
+                        <li>Chọn: <span class="highlight">Sign up with GitHub</span> (khuyên dùng!)</li>
+                        <li>Authorize Render to access GitHub</li>
+                        <li>Click: <span class="highlight">Authorize Render</span></li>
+                    </ol>
+
+                    <div class="success">
+                        <div class="success-title">✅ Hoàn thành!</div>
+                        Bạn đã có tài khoản Render! Sẽ tự động redirect đến Dashboard.
+                    </div>
+                </div>
+            </div>
+
+            <!-- BƯỚC 6: TẠO WEB SERVICE -->
+            <div class="step">
+                <div class="step-number">6</div>
+                <div class="step-title">🚀 Tạo Web Service trên Render</div>
+                <div class="step-content">
+                    <p><strong>Bước này:</strong> Deploy website lên internet!</p>
+
+                    <p><strong>6.1. Tạo Web Service:</strong></p>
+                    <ol>
+                        <li>Dashboard: <a href="https://dashboard.render.com" target="_blank">https://dashboard.render.com</a></li>
+                        <li>Click: <span class="highlight">New +</span> (góc trên bên phải)</li>
+                        <li>Chọn: <span class="highlight">Web Service</span></li>
+                    </ol>
+
+                    <p><strong>6.2. Connect Repository:</strong></p>
+                    <ol>
+                        <li>Nếu <strong>KHÔNG</strong> thấy repository <code>TrainingB</code>:
+                            <ul>
+                                <li>Click: <span class="highlight">Configure account</span></li>
+                                <li>Chọn: <strong>All repositories</strong> hoặc chọn <code>TrainingB</code></li>
+                                <li>Click: <span class="highlight">Install & Authorize</span></li>
+                            </ul>
+                        </li>
+                        <li>Click vào repository: <code>username / TrainingB</code></li>
+                    </ol>
+
+                    <p><strong>6.3. Configure Service:</strong></p>
+
+                    <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                        <tr style="background: #f8f9fa;">
+                            <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Field</th>
+                            <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Value</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>Name</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><code>trainingb</code></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>Region</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><span class="highlight">Singapore</span> (gần VN nhất!)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>Branch</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><code>main</code></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>Runtime</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><span class="highlight">Docker</span> ⚠️ QUAN TRỌNG!</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>Instance Type</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><span class="highlight">Free</span> ($0/month)</td>
+                        </tr>
+                    </table>
+
+                    <div class="warning">
+                        <div class="warning-title">⚠️ QUAN TRỌNG:</div>
+                        <p><strong>Runtime</strong> PHẢI chọn <strong>Docker</strong>!</p>
+                        <p>KHÔNG phải Node, Python, hay Static Site!</p>
+                    </div>
+
+                    <p><strong>6.4. Deploy:</strong></p>
+                    <ol>
+                        <li>Scroll xuống cuối trang</li>
+                        <li>Click: <span class="highlight">Deploy Web Service</span></li>
+                        <li>Đợi ~5-7 phút để build và deploy</li>
+                    </ol>
+
+                    <div class="info">
+                        <div class="info-title">⏰ Timeline Deployment:</div>
+                        <ul>
+                            <li><strong>0-2 phút:</strong> Cloning repository</li>
+                            <li><strong>2-5 phút:</strong> Building Docker image</li>
+                            <li><strong>5-7 phút:</strong> Starting service</li>
+                            <li><strong>~7 phút:</strong> ✅ LIVE!</li>
+                        </ul>
+                    </div>
+
+                    <p><strong>6.5. Monitor Deployment:</strong></p>
+                    <p>Xem logs real-time để theo dõi tiến trình:</p>
+                    <div class="code-block"><code>==> Cloning from https://github.com/username/TrainingB...
+==> Building...
+==> Step 1/15: FROM mcr.microsoft.com/dotnet/sdk:8.0
+==> Step 2/15: WORKDIR /src
+...
+==> Build successful!
+==> Starting service...
+==> Your service is live 🎉</code></div>
+
+                    <div class="success">
+                        <div class="success-title">✅ Deploy thành công!</div>
+                        <p>URL của bạn sẽ là:</p>
+                        <code>https://trainingb.onrender.com</code>
+                        <p>hoặc</p>
+                        <code>https://trainingb-xxxx.onrender.com</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BƯỚC 7: TEST WEBSITE -->
+            <div class="step">
+                <div class="step-number">7</div>
+                <div class="step-title">🧪 Test Website</div>
+                <div class="step-content">
+                    <p><strong>Website đã LIVE! Giờ test thử:</strong></p>
+
+                    <ol>
+                        <li>Mở browser</li>
+                        <li>Vào URL: <code>https://trainingb.onrender.com</code></li>
+                        <li>Lần đầu có thể mất ~30 giây (wake up từ sleep)</li>
+                        <li>Sẽ thấy giao diện TrainingB! 🎉</li>
+                    </ol>
+
+                    <p><strong>Test các tính năng:</strong></p>
+                    <ul>
+                        <li>✅ Click button scraper → Confirm dialog → Chạy</li>
+                        <li>✅ Đợi kết quả hiển thị</li>
+                        <li>✅ Click "📋 Copy Kết Quả"</li>
+                        <li>✅ Click "🔢 Đảo Số" để test tính năng Đảo Số</li>
+                    </ul>
+
+                    <div class="success">
+                        <div class="success-title">✅ Website hoạt động!</div>
+                        Giờ bạn có thể chia sẻ URL cho bạn bè!
+                    </div>
+                </div>
+            </div>
+
+            <!-- BƯỚC 8: CÀI ĐẶT PWA TRÊN MOBILE -->
+            <div class="step">
+                <div class="step-number">8</div>
+                <div class="step-title">📱 Cài Đặt App trên Mobile</div>
+                <div class="step-content">
+                    <p><strong>Dùng website như app native trên điện thoại:</strong></p>
+
+                    <p><strong>Trên Android:</strong></p>
+                    <ol>
+                        <li>Mở Chrome</li>
+                        <li>Vào: <code>https://trainingb.onrender.com</code></li>
+                        <li>Click button: <span class="highlight">📱 Cài đặt App</span></li>
+                        <li>Hoặc: Menu (3 chấm) → <strong>Add to Home Screen</strong></li>
+                        <li>Click: <span class="highlight">Install</span></li>
+                        <li>Icon sẽ xuất hiện trên màn hình chính!</li>
+                    </ol>
+
+                    <p><strong>Trên iPhone:</strong></p>
+                    <ol>
+                        <li>Mở Safari</li>
+                        <li>Vào: <code>https://trainingb.onrender.com</code></li>
+                        <li>Click nút <strong>Share</strong> (ở dưới)</li>
+                        <li>Chọn: <strong>Add to Home Screen</strong></li>
+                        <li>Click: <span class="highlight">Add</span></li>
+                        <li>Icon sẽ xuất hiện trên màn hình chính!</li>
+                    </ol>
+
+                    <div class="success">
+                        <div class="success-title">✅ Giờ mở app như app thật!</div>
+                        <ul>
+                            <li>Không cần mở browser</li>
+                            <li>Có icon riêng</li>
+                            <li>Chạy full-screen</li>
+                            <li>Offline support</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- PHẦN THÔNG TIN THÊM -->
+        <div class="info">
+            <div class="info-title">💡 Thông Tin Render Free Tier</div>
+            <p><strong>Ưu điểm:</strong></p>
+            <ul>
+                <li>✅ Hoàn toàn miễn phí</li>
+                <li>✅ 750 giờ/tháng (đủ dùng!)</li>
+                <li>✅ Auto-deploy khi push GitHub</li>
+                <li>✅ SSL certificate miễn phí</li>
+            </ul>
+            <p><strong>Nhược điểm:</strong></p>
+            <ul>
+                <li>⚠️ Sleep sau 15 phút không dùng</li>
+                <li>⚠️ Wake-up mất ~30 giây</li>
+            </ul>
+            <p><strong>Nếu muốn upgrade ($7/month):</strong></p>
+            <ul>
+                <li>✅ Không sleep (24/7)</li>
+                <li>✅ Performance tốt hơn</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <div class="warning-title">🔄 Cách Update Code Sau Này</div>
+            <p>Khi muốn thay đổi code và deploy lại:</p>
+            <div class="code-block"><code># Trong folder D:\TrainingB
+git add .
+git commit -m "Mô tả thay đổi"
+git push
+
+# Render sẽ TỰ ĐỘNG deploy lại! (~5 phút)</code></div>
+        </div>
+
+        <div class="success">
+            <div class="success-title">🎉 Hoàn Thành!</div>
+            <p>Website của bạn đã LIVE trên internet!</p>
+            <p><strong>URL:</strong> <code>https://trainingb.onrender.com</code></p>
+            <p><strong>GitHub:</strong> <code>https://github.com/username/TrainingB</code></p>
+        </div>
+
+        <!-- LINKS HỮU ÍCH -->
+        <div style="text-align: center; margin-top: 40px;">
+            <h2 style="margin-bottom: 20px;">🔗 Links Hữu Ích</h2>
+            <a href="https://github.com" target="_blank" class="btn">GitHub</a>
+            <a href="https://dashboard.render.com" target="_blank" class="btn">Render Dashboard</a>
+            <a href="https://git-scm.com/download/win" target="_blank" class="btn">Download Git</a>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding-top: 30px; border-top: 2px solid #eee; color: #999;">
+            <p>📚 TrainingB Deploy Guide | Version 1.0</p>
+            <p>Created with ❤️ by Augment AI</p>
+        </div>
+    </div>
+</body>
+</html>
