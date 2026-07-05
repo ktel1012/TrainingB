@@ -133,7 +133,9 @@ namespace TrainingB.Core.Services
                     options.AddArgument("--disable-gpu");
                     options.AddArgument("--disable-software-rasterizer");
                     options.AddArgument("--disable-extensions");
-                    Logger.Info("Chrome configured for Docker/Linux container");
+                    // Large window size to force render all table data (400 lines instead of 160)
+                    options.AddArgument("--window-size=1920,4000");
+                    Logger.Info("Chrome configured for Docker/Linux container with large viewport");
                 }
 
                 var service = ChromeDriverService.CreateDefaultService();

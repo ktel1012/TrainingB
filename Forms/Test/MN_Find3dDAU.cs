@@ -35,6 +35,9 @@ namespace TrainingB.Forms.Test
                         var tbl = _driver.FindElement(TablePath);
                         var txt = tbl.Text;
 
+                        int lineCount = string.IsNullOrWhiteSpace(txt) ? 0 : txt.Split('\n').Length;
+                        Logger.Debug($"Desktop: Button returned {lineCount} lines");
+
                         if (string.IsNullOrWhiteSpace(txt)) continue;
 
                         var ls = new List<string>();
