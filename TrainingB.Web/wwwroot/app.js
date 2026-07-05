@@ -143,7 +143,7 @@ async function runScraper(name) {
             resultsDiv.textContent = `[${new Date().toLocaleTimeString()}] ${name}: ${message}\n\n` + resultsDiv.textContent;
         } else if (response.status === 408) {
             // Timeout from server
-            const timeoutMsg = is4D ? 'quá 10 phút' : 'quá 5 phút';
+            const timeoutMsg = is4D ? 'quá 12 phút' : 'quá 5 phút';
             showStatus(`⏱️ ${name} timeout (${timeoutMsg})`, 'error');
             resultsDiv.textContent = `[${new Date().toLocaleTimeString()}] ${name}: TIMEOUT - Scraper chạy quá lâu\n\n` + resultsDiv.textContent;
         } else {

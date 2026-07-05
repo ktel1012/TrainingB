@@ -88,9 +88,9 @@ namespace TrainingB.Web.Controllers
                 driver.NavigateWithRetry(scraper.URL);
 
                 // Run scraper with timeout
-                // 4D scrapers need more time (100 buttons × 3s = 5min, need buffer)
+                // 4D scrapers need more time (100 buttons × 3s = 5min, actual 10-12min needed)
                 // 2D/3D scrapers complete in 1-3 minutes
-                int timeoutMinutes = scraperName.Contains("4D") ? 10 : 5;
+                int timeoutMinutes = scraperName.Contains("4D") ? 12 : 5;
                 using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(timeoutMinutes));
                 var task = Task.Run(() => scraper.GetChangeList(), cts.Token);
 
