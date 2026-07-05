@@ -32,7 +32,7 @@ namespace TrainingB.Core.Scrapers
                     {
                         b[5].Click();
                         bb1.Click();
-                        WaitForTableData(TablePath, maxWaitSeconds: 10);
+                        WaitForTableData(TablePath, maxWaitSeconds: 5, stableCheckCount: 2, checkIntervalMs: 300);
 
                         var tbl1 = _driver.FindElement(TablePath);
                         var txt = tbl1.Text;
