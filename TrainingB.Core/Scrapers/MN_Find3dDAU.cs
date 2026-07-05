@@ -72,7 +72,9 @@ namespace TrainingB.Core.Scrapers
                                 }
 
                                 int sum = val0 + val1 + val2;
-                                if (sum == threshold || (val0 == 0 && val1 == 0 && val2 == 0))
+                                // TEMPORARY: Only skip zero values, not threshold matches
+                                // Original logic: if (sum == threshold || (val0 == 0 && val1 == 0 && val2 == 0))
+                                if (val0 == 0 && val1 == 0 && val2 == 0)
                                 {
                                     thresholdSkips++;
                                     if (thresholdSkips <= 3) // Log first 3 skipped items for debugging
