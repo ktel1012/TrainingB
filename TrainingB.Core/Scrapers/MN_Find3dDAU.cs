@@ -75,6 +75,10 @@ namespace TrainingB.Core.Scrapers
                                 if (sum == threshold || (val0 == 0 && val1 == 0 && val2 == 0))
                                 {
                                     thresholdSkips++;
+                                    if (thresholdSkips <= 3) // Log first 3 skipped items for debugging
+                                    {
+                                        Logger.Debug($"MN_Find3dDAU: Skipping '{ls[3]}' - sum={sum}, threshold={threshold}, values=({val0},{val1},{val2})");
+                                    }
                                     ls = new List<string>();
                                     continue;
                                 }
