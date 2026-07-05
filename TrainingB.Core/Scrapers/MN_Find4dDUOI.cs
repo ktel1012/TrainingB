@@ -30,8 +30,18 @@ namespace TrainingB.Core.Scrapers
 
                     Logger.Info($"MN_Find4dDUOI: Found {bb.Count} buttons to process");
 
+                    // Limit to first 50 buttons due to Render timeout
+                    int maxButtons = Math.Min(bb.Count, 50);
+                    Logger.Info($"MN_Find4dDUOI: Processing first {maxButtons} buttons (limited for performance)");
+
                     int buttonIndex = 0;
                     foreach (var bb1 in bb)
+                    {
+                        if (buttonIndex >= maxButtons)
+                        {
+                            Logger.Info($"MN_Find4dDUOI: Stopping at button {maxButtons} to avoid timeout");
+                            break;
+                        }
                     {
                         buttonIndex++;
                         Logger.Debug($"MN_Find4dDUOI: Processing button {buttonIndex}/{bb.Count}");
@@ -74,6 +84,7 @@ namespace TrainingB.Core.Scrapers
                                 ls = new List<string>();
                             }
                         }
+                    }
                     }
 
                     return ProcessResults4Items(dic, threshold, "4dDuoiMN");
