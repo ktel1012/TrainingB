@@ -25,6 +25,15 @@ RUN apt-get update && apt-get install -y \
     wget \
     gnupg \
     unzip \
+    xvfb \
+    libxi6 \
+    libgconf-2-4 \
+    libnss3 \
+    libxss1 \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libgtk-3-0 \
+    libgbm1 \
     && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \
     && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | tee /etc/apt/sources.list.d/google-chrome.list \
     && apt-get update \
