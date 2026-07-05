@@ -71,7 +71,17 @@ namespace TrainingB.Core.Scrapers
                                     continue;
                                 }
 
-                                dic[ls[3]] = new List<int> { val0, val1, val2 };
+                                // Handle duplicate keys by adding unique suffix
+                                string key = ls[3];
+                                int suffix = 0;
+                                while (dic.ContainsKey(key))
+                                {
+                                    suffix++;
+                                    key = $"{ls[3]}_dup{suffix}";
+                                    Logger.Debug($"MN_Find3dDAU: Duplicate key '{ls[3]}', using '{key}' instead");
+                                }
+
+                                dic[key] = new List<int> { val0, val1, val2 };
                                 ls = new List<string>();
                             }
                         }
