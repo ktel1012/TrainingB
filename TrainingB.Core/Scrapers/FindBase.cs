@@ -214,9 +214,8 @@ namespace TrainingB.Core.Scrapers
         {
             try
             {
-                // TEMPORARY: Disable threshold filtering in ProcessResults4Items
-                // Original: var filtered = results.Where(p => p.Value.Sum() != threshold).Select(p => p).ToList();
-                var filtered = results.Select(p => p).ToList();
+                // Filter to keep only high probability numbers (sum > threshold)
+                var filtered = results.Where(p => p.Value.Sum() > threshold).Select(p => p).ToList();
 
                 if (filtered.Count == 0)
                 {
@@ -259,9 +258,8 @@ namespace TrainingB.Core.Scrapers
         {
             try
             {
-                // TEMPORARY: Disable threshold filtering in ProcessResults
-                // Original: var filtered = results.Where(p => p.Value.Sum() != threshold).Select(p => p).ToList();
-                var filtered = results.Select(p => p).ToList();
+                // Filter to keep only high probability numbers (sum > threshold)
+                var filtered = results.Where(p => p.Value.Sum() > threshold).Select(p => p).ToList();
 
                 if (filtered.Count == 0)
                 {
