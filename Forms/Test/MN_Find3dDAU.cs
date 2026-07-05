@@ -25,6 +25,8 @@ namespace TrainingB.Forms.Test
                     var l = _driver.FindElement(FirstListPath);
                     var l2 = l.FindElements(By.XPath("span[@role='button']"));
 
+                    Logger.Info($"MN_Find3dDAU Desktop: Found {l2.Count} buttons to process");
+
                     foreach (var l3 in l2)
                     {
                         l3.Click();
@@ -59,6 +61,9 @@ namespace TrainingB.Forms.Test
                                     ls = new List<string>();
                                     continue;
                                 }
+
+                                // Log để debug: xem sum của các số được giữ lại
+                                Logger.Info($"Desktop KEEP: '{ls[3]}' sum={sum}, threshold={threshold}, values=({val0},{val1},{val2})");
 
                                 dic[ls[3]] = new List<int> { val0, val1, val2 };
                                 ls = new List<string>();

@@ -108,16 +108,15 @@ namespace TrainingB.Core.Scrapers
         /// Useful after clicking buttons that trigger AJAX/dynamic content loading.
         /// Ensures ALL data is loaded, not just partial data.
         /// </summary>
-        protected void WaitForTableData(By tablePath, int maxWaitSeconds = 15)
+        protected void WaitForTableData(By tablePath, int maxWaitSeconds = 15, int stableCheckCount = 5, int checkIntervalMs = 500)
         {
             try
             {
                 int waitedMs = 0;
-                int checkIntervalMs = 500; // Increased from 300ms to 500ms
                 int maxWaitMs = maxWaitSeconds * 1000;
                 string previousText = "";
                 int stableCount = 0;
-                int requiredStableChecks = 5; // Increased from 3 to 5 for more confidence
+                int requiredStableChecks = stableCheckCount;
 
                 while (waitedMs < maxWaitMs)
                 {
