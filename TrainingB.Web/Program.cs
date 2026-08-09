@@ -2,7 +2,18 @@ using TrainingB.Core.Configuration;
 using TrainingB.Core.Services;
 using CoreConfigManager = TrainingB.Core.Configuration.ConfigurationManager;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    Args = args,
+    // Disable file watching in production to avoid inotify limit issues on Render
+    ContentRootPath = AppContext.BaseDirectory
+});
+
+// Disable file change monitoring for configuration files
+builder.Configuration.Sources
+    .OfType<Microsoft.Extensions.Configuration.Json.JsonConfigurationSource>()
+    .ToList()
+    .ForEach(s => s.ReloadOnChange = false);
 
 // Configure Kestrel server with extended timeouts for long-running scrapers
 builder.WebHost.ConfigureKestrel(serverOptions =>
