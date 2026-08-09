@@ -1,5 +1,5 @@
 # Build stage
-# Force rebuild: 2026-07-05 21:56 - Limit 4D scrapers to 50 buttons
+# Force rebuild: 2026-08-09 08:43 - Reduce 4D scrapers to 30 buttons + health check
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
