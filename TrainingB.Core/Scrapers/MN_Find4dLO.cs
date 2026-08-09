@@ -30,8 +30,8 @@ namespace TrainingB.Core.Scrapers
 
                     Logger.Info($"MN_Find4dLO: Found {bb.Count} buttons to process");
 
-                    // Limit to first 50 buttons due to Render timeout
-                    int maxButtons = Math.Min(bb.Count, 50);
+                    // Limit to first 30 buttons due to Render timeout and memory constraints
+                    int maxButtons = Math.Min(bb.Count, 30);
                     Logger.Info($"MN_Find4dLO: Processing first {maxButtons} buttons (limited for performance)");
 
                     int buttonIndex = 0;

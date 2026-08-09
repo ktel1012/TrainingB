@@ -50,6 +50,9 @@ app.UseStaticFiles();
 // API endpoints
 app.MapControllers();
 
+// Health check endpoint for Render.com (prevents auto-restart during long scraping operations)
+app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow }));
+
 // Fallback to index.html for SPA
 app.MapFallbackToFile("index.html");
 
