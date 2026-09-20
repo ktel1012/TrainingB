@@ -121,7 +121,7 @@ public class MainPage : ContentPage
         {
             using var response = await _httpClient.PostAsync($"api/scraper/run/{scraperName}", null);
             var body = await response.Content.ReadAsStringAsync();
-            _resultsEditor.Text = FormatResponse(response.IsSuccessStatusCode, body);
+            AppendResult(FormatResponse(response.IsSuccessStatusCode, body));
             _statusLabel.Text = response.IsSuccessStatusCode
                 ? $"Hoàn thành: {button.Text}"
                 : $"Lỗi HTTP {(int)response.StatusCode}: {button.Text}";
@@ -129,17 +129,27 @@ public class MainPage : ContentPage
         catch (TaskCanceledException)
         {
             _statusLabel.Text = "Đã hết thời gian chờ. Hãy kiểm tra Render logs.";
-            _resultsEditor.Text = "Request timeout sau 15 phút.";
+            AppendResult($"{button.Text}: Request timeout sau 15 phút.");
         }
         catch (Exception ex)
         {
             _statusLabel.Text = "Không kết nối được backend";
-            _resultsEditor.Text = ex.Message;
+            AppendResult($"{button.Text}: {ex.Message}");
         }
         finally
         {
             SetBusy(false, _statusLabel.Text);
         }
+    }
+
+    private void AppendResult(string result)
+    {
+        var existing = _resultsEditor.Text?.TrimEnd() ?? string.Empty;
+        var separator = string.IsNullOrWhiteSpace(existing)
+            ? string.Empty
+            : Environment.NewLine + Environment.NewLine;
+
+        _resultsEditor.Text = existing + separator + result.Trim();
     }
 
     private void SetBusy(bool busy, string status)
