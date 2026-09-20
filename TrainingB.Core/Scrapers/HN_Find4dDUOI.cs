@@ -31,9 +31,8 @@ namespace TrainingB.Core.Scrapers
 
                     Logger.Info($"HN_Find4dDUOI: Found {bb.Count} buttons to process");
 
-                    // Limit to first 30 buttons due to Render timeout and memory constraints
-                    int maxButtons = Math.Min(bb.Count, 30);
-                    Logger.Info($"HN_Find4dDUOI: Processing first {maxButtons} buttons (limited for performance)");
+                    int maxButtons = Get4DButtonLimit(bb.Count);
+                    Logger.Info($"HN_Find4dDUOI: Processing {maxButtons} of {bb.Count} buttons");
 
                     int buttonIndex = 0;
                     foreach (var bb1 in bb)

@@ -50,6 +50,8 @@ EXPOSE 8080
 # Set environment variables
 ENV ASPNETCORE_URLS=http://+:8080
 ENV ASPNETCORE_ENVIRONMENT=Production
+# Keep 4D scraping within Render's free-tier resource limits. Desktop does not set this variable.
+ENV TRAININGB_MAX_4D_BUTTONS=30
 
 # Run the app
 ENTRYPOINT ["dotnet", "TrainingB.Web.dll"]

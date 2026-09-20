@@ -213,6 +213,23 @@ namespace TrainingB.Core.Scrapers
             throw new InvalidOperationException($"Required threshold key '{regionKey}' is missing from appsettings.json");
         }
 
+        /// <summary>
+        /// Returns the 4D button limit configured by the hosting environment.
+        /// Render sets TRAININGB_MAX_4D_BUTTONS=30 in the Docker image; Desktop
+        /// does not set it and therefore processes all buttons found on the page.
+        /// </summary>
+        protected int Get4DButtonLimit(int availableButtons)
+        {
+            var configuredLimit = Environment.GetEnvironmentVariable("TRAININGB_MAX_4D_BUTTONS");
+
+            if (int.TryParse(configuredLimit, out int limit) && limit > 0)
+            {
+                return Math.Min(availableButtons, limit);
+            }
+
+            return availableButtons;
+        }
+
         protected string ProcessResults4Items(Dictionary<string, List<int>> results, int threshold, string prefix)
         {
             try
